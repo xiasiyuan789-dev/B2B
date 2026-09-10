@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>徐工集团 · 组织架构与账号管理</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f6fa;--card:#ffffff;--card-2:#f7f9fc;--line:#e4e8f0;--line-soft:#eef1f6;
+  --text-900:#141824;--text-600:#5a6478;--text-400:#9aa3b5;
+  --red:#e2231a;--red-2:#ff3b30;--red-dark:#b81810;--red-light:#fdeceb;--red-tint:#fff5f4;
+  --success:#1f9d5c;--success-light:#e6f6ed;--warning:#d98212;--warning-light:#fdf3e4;
+  --danger:#d83a52;--danger-light:#fceaed;
+  --radius-lg:14px;--radius-md:10px;--radius-sm:7px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text-900);font-size:14px;-webkit-font-smoothing:antialiased;}
+.mono{font-family:'JetBrains Mono',monospace;}
+h1,h2,h3{font-family:'Chakra Petch',sans-serif;margin:0;letter-spacing:.2px;}
+button{font-family:inherit;cursor:pointer;}
+input,select,textarea{font-family:inherit;}
+
+.app{display:flex;min-height:100vh;}
+.sidebar{width:230px;flex-shrink:0;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:20;}
+.sidebar::before{content:'';display:block;height:3px;width:100%;background:linear-gradient(90deg,var(--red),var(--red-2),transparent);}
+.brand{display:flex;align-items:center;gap:11px;padding:18px 18px 15px;border-bottom:1px solid var(--line);}
+.brand-mark{width:36px;height:36px;border-radius:9px;flex-shrink:0;background:linear-gradient(150deg,var(--red-2),var(--red-dark));display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(226,35,26,.28);font-family:'Chakra Petch';font-weight:700;color:#fff;font-size:19px;}
+.brand-text .t1{color:var(--text-900);font-family:'Chakra Petch';font-size:16px;font-weight:700;line-height:1.2;letter-spacing:.5px;}
+.brand-text .t2{color:var(--red);font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;font-family:'JetBrains Mono';}
+.nav{flex:1;padding:10px;overflow-y:auto;}
+.nav-group-label{color:var(--text-400);font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;padding:14px 10px 6px;font-family:'JetBrains Mono';}
+.nav-item{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:8px;color:var(--text-600);font-size:13.5px;font-weight:500;margin-bottom:2px;cursor:pointer;transition:.15s;user-select:none;}
+.nav-item svg{width:17px;height:17px;flex-shrink:0;opacity:.85;}
+.nav-item:hover{background:var(--red-tint);color:var(--text-900);}
+.nav-item.active{background:linear-gradient(90deg,var(--red-light),transparent);color:var(--red-dark);font-weight:600;box-shadow:inset 2px 0 0 var(--red);}
+.nav-item.active svg{opacity:1;color:var(--red);}
+.sidebar-foot{padding:13px 16px;border-top:1px solid var(--line);}
+.foot-user{display:flex;align-items:center;gap:9px;}
+.avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(150deg,var(--red-2),var(--red-dark));color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.foot-user .name{color:var(--text-900);font-size:12.5px;font-weight:600;}
+.foot-user .role{color:var(--text-400);font-size:11px;}
+
+.main{margin-left:230px;flex:1;display:flex;flex-direction:column;min-width:0;transition:margin-left .22s ease;}
+
+/* ==== 侧边栏收起 ==== */
+.sidebar{transition:width .22s ease;}
+.app.collapsed .sidebar{width:64px;}
+.app.collapsed .main{margin-left:64px;}
+.app.collapsed .brand{padding:18px 0 15px;justify-content:center;}
+.app.collapsed .brand-text{display:none;}
+.app.collapsed .nav{padding:10px 8px;}
+.app.collapsed .nav-group-label{opacity:0;height:14px;padding:8px 0 0;overflow:hidden;}
+.app.collapsed .nav-item{justify-content:center;gap:0;padding:11px 0;}
+.app.collapsed .nav-item span,
+.app.collapsed .nav-item{font-size:0;}
+.app.collapsed .nav-item svg{width:19px;height:19px;}
+.app.collapsed .sidebar-foot{padding:13px 0;}
+.app.collapsed .foot-user{justify-content:center;}
+.app.collapsed .foot-user>div:last-child{display:none;}
+.collapse-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--text-600);flex-shrink:0;transition:.15s;}
+.collapse-btn:hover{background:var(--red-tint);color:var(--red);border-color:var(--red-light);}
+.collapse-btn svg{width:17px;height:17px;transition:transform .22s ease;}
+.app.collapsed .collapse-btn svg{transform:scaleX(-1);}
+.topbar{height:56px;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:10;}
+.crumb{display:flex;align-items:center;gap:8px;color:var(--text-400);font-size:13px;}
+.crumb b{color:var(--text-900);font-weight:600;}
+.search-box{display:flex;align-items:center;gap:7px;background:var(--card-2);border:1px solid var(--line);border-radius:8px;padding:7px 12px;width:230px;}
+.search-box svg{width:14px;height:14px;color:var(--text-400);flex-shrink:0;}
+.search-box input{border:none;background:transparent;outline:none;font-size:13px;width:100%;color:var(--text-900);}
+
+/* ==== 顶栏用户菜单 ==== */
+.avatar.sm{width:28px;height:28px;font-size:11px;}
+.user-menu{position:relative;}
+.user-trigger{display:flex;align-items:center;gap:9px;padding:5px 9px 5px 6px;border-radius:9px;border:1px solid var(--line);background:var(--card);cursor:pointer;transition:.15s;}
+.user-trigger:hover{background:var(--red-tint);border-color:var(--red-light);}
+.ut-info{line-height:1.2;}
+.ut-name{font-size:12.5px;font-weight:600;color:var(--text-900);}
+.ut-role{font-size:11px;color:var(--text-400);}
+.ut-chev{width:14px;height:14px;color:var(--text-400);transition:transform .18s;}
+.user-menu.menu-open .ut-chev{transform:rotate(180deg);}
+.user-dropdown{position:absolute;top:calc(100% + 8px);right:0;width:288px;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 40px rgba(20,24,36,.16);opacity:0;visibility:hidden;transform:translateY(-6px);transition:.18s;z-index:120;overflow:hidden;}
+.user-dropdown.open{opacity:1;visibility:visible;transform:translateY(0);}
+.ud-head{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line-soft);background:linear-gradient(120deg,var(--red-tint),transparent);}
+.ud-name{font-size:14.5px;font-weight:700;color:var(--text-900);}
+.ud-sub{font-size:11.5px;color:var(--text-400);margin-top:2px;}
+.ud-list{padding:8px 18px;}
+.ud-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line-soft);font-size:12.5px;}
+.ud-row:last-child{border-bottom:none;}
+.ud-label{color:var(--text-400);}
+.ud-val{color:var(--text-900);font-weight:500;}
+.ud-logout{display:flex;align-items:center;gap:9px;padding:13px 18px;border-top:1px solid var(--line-soft);color:var(--red);font-size:13px;font-weight:600;cursor:pointer;transition:.15s;}
+.ud-logout:hover{background:var(--red-tint);}
+.ud-logout svg{width:16px;height:16px;}
+.ud-switch{padding:10px 18px 6px;border-top:1px solid var(--line-soft);}
+.ud-switch-label{font-size:11px;color:var(--text-400);font-weight:600;margin-bottom:6px;}
+.ud-switch-item{display:flex;align-items:center;justify-content:space-between;padding:7px 8px;border-radius:var(--radius-sm);font-size:13px;cursor:pointer;transition:.15s;}
+.ud-switch-item:hover{background:var(--card-2);}
+.ud-switch-item.cur{background:var(--red-tint);cursor:default;}
+.ud-switch-item .name{font-weight:500;color:var(--text-900);}
+.ud-switch-item .role{font-size:11.5px;color:var(--text-400);}
+.ud-switch-item .cur-tag{font-size:11px;color:var(--red);font-weight:600;}
+
+.content{padding:16px 24px 40px;flex:1;}
+.view{display:none;}
+.view.active{display:block;animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.page-head h1{font-size:19px;color:var(--text-900);}
+.page-head .sub{color:var(--text-400);font-size:12.5px;margin-top:4px;}
+
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:8px;border:1px solid transparent;font-size:13px;font-weight:600;transition:filter .15s,transform .1s;}
+.btn:active{transform:scale(.97);}
+.btn svg{width:14px;height:14px;}
+.btn-primary{background:linear-gradient(135deg,var(--red-2),var(--red-dark));color:#fff;box-shadow:0 3px 10px rgba(226,35,26,.24);}
+.btn-primary:hover{filter:brightness(1.06);}
+.btn-ghost{background:var(--card);color:var(--text-600);border-color:var(--line);}
+.btn-ghost:hover{background:var(--card-2);color:var(--text-900);}
+.btn-sm{padding:6px 11px;font-size:12px;}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:0 1px 2px rgba(20,24,36,.03);}
+.card-pad{padding:18px 20px;}
+.card-title{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line-soft);}
+.card-title h3{font-size:14px;color:var(--text-900);}
+.card-title .tag{font-size:11px;color:var(--text-400);}
+
+/* ==== org layout ==== */
+.org-layout{display:grid;grid-template-columns:340px 1fr;gap:16px;align-items:start;}
+
+.tree-search{padding:12px 16px;border-bottom:1px solid var(--line-soft);}
+.tree-search input{width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--line);font-size:12.5px;outline:none;background:var(--card-2);color:var(--text-900);}
+.tree-search input:focus{border-color:var(--red);}
+.org-tree{list-style:none;margin:0;padding:10px;}
+.org-tree ul{list-style:none;margin:0;padding-left:18px;border-left:1px dashed var(--line);}
+.org-tree li{margin:1px 0;}
+.node{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;position:relative;}
+.node:hover{background:var(--red-tint);}
+.node.sel{background:var(--red-light);box-shadow:inset 2px 0 0 var(--red);}
+.node .caret{width:14px;height:14px;flex-shrink:0;color:var(--text-400);transition:transform .15s;cursor:pointer;}
+.node .caret.collapsed{transform:rotate(-90deg);}
+.node .caret.empty{visibility:hidden;}
+.node .nicon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.node .nicon svg{width:14px;height:14px;}
+.node .nname{font-size:13px;font-weight:500;color:var(--text-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.node .badge{font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:5px;flex-shrink:0;font-family:'Inter';}
+.badge.co-ind{background:var(--red-light);color:var(--red);}
+.badge.co{background:var(--warning-light);color:var(--warning);}
+.badge.dept{background:#eef0f4;color:var(--text-600);}
+.badge.signed{background:var(--red-light);color:var(--red);}
+.node .cnt{margin-left:auto;font-size:10.5px;color:var(--text-400);font-family:'JetBrains Mono';flex-shrink:0;}
+.node-children.collapsed{display:none;}
+
+.nicon.co-ind{background:var(--red-light);color:var(--red);}
+.nicon.co{background:var(--warning-light);color:var(--warning);}
+.nicon.dept{background:#eef0f4;color:var(--text-600);}
+.node .nicon.root{background:transparent;border:none;color:var(--red);}
+
+/* ==== detail panel ==== */
+.detail-head{display:flex;align-items:center;gap:14px;padding:18px 20px;border-bottom:1px solid var(--line-soft);}
+.detail-head .big-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.detail-head .big-icon svg{width:24px;height:24px;}
+.detail-head .meta h2{font-size:17px;color:var(--text-900);margin-bottom:5px;}
+.detail-head .meta .row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-400);flex-wrap:wrap;}
+.detail-head .actions{margin-left:auto;display:flex;gap:8px;}
+
+.dtabs{display:flex;gap:4px;padding:12px 20px 0;border-bottom:1px solid var(--line-soft);}
+.dtab{padding:9px 16px;font-size:13px;font-weight:600;color:var(--text-600);border-bottom:2px solid transparent;cursor:pointer;margin-bottom:-1px;}
+.dtab.active{color:var(--red);border-bottom-color:var(--red);}
+.dtab.hidden{display:none;}
+
+.dpanel{display:none;padding:18px 20px;}
+.dpanel.active{display:block;}
+
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.input-sm,.select-sm{padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card);font-size:12.5px;color:var(--text-600);outline:none;}
+.input-sm{min-width:180px;}
+.input-sm:focus,.select-sm:focus{border-color:var(--red);}
+
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{text-align:left;color:var(--text-400);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;padding:0 12px 10px;border-bottom:1px solid var(--line);white-space:nowrap;}
+tbody td{padding:12px;border-bottom:1px solid var(--line-soft);color:var(--text-900);white-space:nowrap;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--red-tint);}
+.table-wrap{overflow-x:auto;}
+
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:600;}
+.pill::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;}
+.pill.green{background:var(--success-light);color:var(--success);}
+.pill.gray{background:#eef0f4;color:var(--text-600);}
+.pill.red{background:var(--red-light);color:var(--red);}
+.row-actions{display:flex;gap:14px;}
+.row-actions a{color:var(--red);font-size:12.5px;font-weight:600;text-decoration:none;cursor:pointer;}
+.row-actions a.danger{color:var(--danger);}
+.row-actions a:hover{text-decoration:underline;}
+.toggle{width:36px;height:20px;border-radius:20px;background:#d5dae4;position:relative;transition:.18s;flex-shrink:0;cursor:pointer;}
+.toggle::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:2px;left:2px;transition:left .18s;box-shadow:0 1px 3px rgba(0,0,0,.25);}
+.toggle.on{background:var(--success);}
+.toggle.on::after{left:18px;}
+
+/* ==== accounting info ==== */
+.info-section{margin-bottom:22px;}
+.info-section h4{font-size:13px;color:var(--text-900);margin:0 0 12px;display:flex;align-items:center;gap:8px;}
+.info-section h4::before{content:'';width:3px;height:14px;border-radius:2px;background:var(--red);}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;}
+.info-item{display:flex;flex-direction:column;gap:5px;}
+.info-item.full{grid-column:1 / -1;}
+.info-item label{font-size:11.5px;color:var(--text-400);font-weight:600;}
+.info-item .val{font-size:13px;color:var(--text-900);}
+.info-item input{padding:9px 12px;border-radius:8px;border:1px solid var(--line);font-size:13px;outline:none;background:var(--card-2);color:var(--text-900);}
+.info-item input:focus{border-color:var(--red);background:var(--card);}
+.info-item input:disabled{color:var(--text-600);background:var(--card-2);}
+
+.empty-note{text-align:center;padding:40px 20px;color:var(--text-400);font-size:13px;}
+.empty-note svg{width:36px;height:36px;margin-bottom:10px;opacity:.5;}
+
+/* ==== modal ==== */
+.modal-overlay{position:fixed;inset:0;background:rgba(20,24,36,.4);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:100;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--card);border:1px solid var(--line);border-radius:14px;width:560px;max-width:92vw;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(20,24,36,.22);}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--card);z-index:2;}
+.modal-head h3{font-size:15.5px;color:var(--text-900);}
+.modal-close{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--text-400);}
+.modal-close:hover{background:var(--card-2);}
+.modal-close svg{width:15px;height:15px;}
+.modal-body{padding:20px 22px;}
+.modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:16px 22px;border-top:1px solid var(--line);position:sticky;bottom:0;background:var(--card);}
+.form-row{margin-bottom:15px;}
+.form-row label{display:block;font-size:12.5px;font-weight:600;color:var(--text-600);margin-bottom:6px;}
+.form-row label .req{color:var(--red);margin-left:2px;}
+.form-row input,.form-row select{width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--line);font-size:13px;outline:none;background:var(--card-2);color:var(--text-900);}
+.form-row input:focus,.form-row select:focus{border-color:var(--red);background:var(--card);}
+.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.section-block{border:1px dashed var(--line);border-radius:10px;padding:16px;margin-bottom:15px;background:var(--card-2);}
+.section-block .block-title{font-size:12.5px;font-weight:700;color:var(--red);margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.section-block .block-title svg{width:15px;height:15px;}
+.conditional{display:none;}
+.conditional.show{display:block;animation:fadeIn .2s ease;}
+
+::-webkit-scrollbar{width:9px;height:9px;}
+::-webkit-scrollbar-thumb{background:#c7cede;border-radius:8px;}
+::-webkit-scrollbar-track{background:transparent;}
+
+@media(max-width:960px){.org-layout{grid-template-columns:1fr;}}
+
+/* ==== 批量导入 ==== */
+.steps-bar{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:22px;}
+.step-node{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--text-400);}
+.step-node .dot{width:24px;height:24px;border-radius:50%;background:#eef0f4;color:var(--text-400);display:flex;align-items:center;justify-content:center;font-size:12px;font-family:'Chakra Petch';}
+.step-node.active{color:var(--red);}
+.step-node.active .dot{background:var(--red);color:#fff;}
+.step-node.done .dot{background:var(--success);color:#fff;}
+.step-node.done{color:var(--success);}
+.step-line{width:44px;height:2px;background:var(--line);}
+
+.tpl-note{display:flex;gap:12px;background:var(--warning-light);border:1px solid #f4e2c2;border-radius:10px;padding:13px 15px;font-size:12.5px;color:#7a5410;line-height:1.6;margin-bottom:16px;}
+.tpl-note b{color:#7a5410;}
+.tpl-note-icon{flex-shrink:0;color:var(--warning);}
+.tpl-note-icon svg{width:20px;height:20px;}
+.tpl-cols{background:var(--card-2);border:1px solid var(--line);border-radius:10px;padding:15px;margin-bottom:16px;}
+.tpl-cols-title{font-size:12.5px;color:var(--text-600);margin-bottom:10px;}
+.tpl-col-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.tpl-chip{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid var(--line);border-radius:7px;padding:6px 10px;font-size:12px;color:var(--text-900);font-weight:500;}
+.tpl-chip i{color:var(--red);font-style:normal;}
+.tpl-chip em{font-style:normal;font-size:10px;color:var(--red);background:var(--red-light);padding:1px 5px;border-radius:4px;}
+.tpl-roles{font-size:12px;color:var(--text-600);display:flex;align-items:center;flex-wrap:wrap;gap:6px;}
+.tpl-downloaded{display:none;margin-top:12px;font-size:12.5px;color:var(--success);font-weight:600;text-align:center;}
+.tpl-downloaded.show{display:block;animation:fadeIn .2s ease;}
+
+.dropzone{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:2px dashed var(--line);border-radius:12px;padding:40px 20px;cursor:pointer;transition:.15s;background:var(--card-2);}
+.dropzone:hover{border-color:var(--red);background:var(--red-tint);}
+.dropzone svg{width:36px;height:36px;color:var(--red);}
+.dz-main{font-size:14px;font-weight:600;color:var(--text-900);}
+.dz-sub{font-size:12px;color:var(--text-400);}
+.uploaded-file{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card-2);}
+.uploaded-file svg{width:24px;height:24px;color:var(--success);flex-shrink:0;}
+.uf-name{font-size:13.5px;font-weight:600;color:var(--text-900);}
+.uf-meta{font-size:11.5px;color:var(--text-400);margin-top:2px;}
+
+.preview-summary{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.ps-item{display:flex;flex-direction:column;align-items:center;padding:10px 18px;border-radius:10px;min-width:88px;}
+.ps-item b{font-family:'Chakra Petch';font-size:22px;line-height:1;}
+.ps-item span{font-size:11.5px;margin-top:4px;}
+.ps-item.ok{background:var(--success-light);color:var(--success);}
+.ps-item.err{background:var(--danger-light);color:var(--danger);}
+.ps-hint{font-size:12px;color:var(--text-400);line-height:1.5;flex:1;}
+.preview-table thead th{padding:10px 12px;background:var(--card-2);position:sticky;top:0;}
+.preview-table td{padding:10px 12px;}
+.preview-table tr.row-err td{background:var(--danger-light);}
+.preview-table tr.row-err:hover td{background:#f8dde2;}
+
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text-900);color:#fff;padding:12px 22px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:0 8px 30px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:.25s;z-index:200;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-danger:hover{filter:brightness(1.06);}
+.del-warn{display:flex;gap:13px;align-items:flex-start;font-size:14px;line-height:1.6;color:var(--text-900);}
+.del-warn-icon{flex-shrink:0;width:38px;height:38px;border-radius:10px;background:var(--danger-light);color:var(--danger);display:flex;align-items:center;justify-content:center;}
+.del-warn-icon svg{width:20px;height:20px;}
+.node-status-tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px;flex-shrink:0;}
+.node-status-tag.off{background:var(--danger-light);color:var(--danger);}
+.node-status-tag.signed{background:var(--red-light);color:var(--red);}
+.node-banner{display:flex;gap:10px;align-items:flex-start;background:var(--danger-light);color:var(--danger);border-radius:var(--radius-md);padding:10px 14px;font-size:13px;line-height:1.6;margin:0 0 14px;}
+.node-banner svg{width:17px;height:17px;flex-shrink:0;margin-top:1px;}
+.block-list{margin:10px 0 0;padding-left:18px;font-size:13px;color:var(--text-600);line-height:1.8;}
+
+/* ===== 登录页 ===== */
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#fafbfd 0%,#eef1f7 55%,#fdeceb 100%);padding:24px;}
+.login-card{width:400px;max-width:100%;background:var(--card);border-radius:var(--radius-lg);box-shadow:0 20px 60px rgba(20,24,36,.08);padding:38px 36px 32px;}
+.login-brand{display:flex;align-items:center;gap:12px;margin-bottom:26px;}
+.login-brand .brand-mark{width:42px;height:42px;border-radius:11px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:19px;font-family:'Chakra Petch',sans-serif;flex-shrink:0;}
+.login-brand .t1{font-size:16.5px;font-weight:700;font-family:'Chakra Petch',sans-serif;color:var(--text-900);}
+.login-brand .t2{font-size:12px;color:var(--text-400);margin-top:1px;}
+.login-title{font-size:20px;font-weight:700;font-family:'Chakra Petch',sans-serif;color:var(--text-900);margin:0 0 4px;}
+.login-sub{font-size:13px;color:var(--text-400);margin:0 0 26px;}
+.login-form-row{margin-bottom:16px;}
+.login-form-row label{display:block;font-size:12.5px;font-weight:600;color:var(--text-600);margin-bottom:7px;}
+.login-form-row input,.login-form-row select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:var(--radius-sm);font-size:14px;color:var(--text-900);background:#fff;outline:none;transition:border-color .15s;}
+.login-form-row input:focus,.login-form-row select:focus{border-color:var(--red);}
+.login-form-row select{-webkit-appearance:none;appearance:none;background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%235a6478" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>');background-repeat:no-repeat;background-position:right 10px center;background-size:16px;padding-right:34px;}
+.login-ent-hint{font-size:12px;color:var(--text-400);margin-top:6px;line-height:1.6;}
+.login-btn{width:100%;padding:11px;border:none;border-radius:var(--radius-sm);background:var(--red);color:#fff;font-size:14.5px;font-weight:600;margin-top:6px;transition:background .15s;}
+.login-btn:hover{background:var(--red-dark);}
+.login-foot-note{text-align:center;font-size:11.5px;color:var(--text-400);margin-top:20px;}
+.login-ent-option{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:var(--radius-md);margin-bottom:10px;cursor:pointer;transition:.15s;}
+.login-ent-option:last-child{margin-bottom:0;}
+.login-ent-option:hover{border-color:var(--red);background:var(--red-tint);}
+.login-ent-option .avatar{width:36px;height:36px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;flex-shrink:0;}
+.login-ent-option .info{flex:1;min-width:0;}
+.login-ent-option .info .name{font-size:14px;font-weight:600;color:var(--text-900);}
+.login-ent-option .info .role{font-size:12px;color:var(--text-400);margin-top:2px;}
+.login-ent-option .chev{width:16px;height:16px;color:var(--text-400);flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<!-- ============ 企业账户登录页 ============ -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="brand-mark">虎</div>
+      <div>
+        <div class="t1">途虎养车</div>
+        <div class="t2">企业数字车管平台</div>
+      </div>
+    </div>
+    <div class="login-title">企业账户登录</div>
+    <div class="login-sub">请输入登录账号，系统将自动识别可登录的企业</div>
+
+    <div class="login-form-row">
+      <label>手机号</label>
+      <input id="login-phone" value="138 0000 0001" placeholder="请输入手机号">
+      <div class="login-ent-hint">示例：138 0000 0001（多企业）/ 138 0000 4444（单企业）</div>
+    </div>
+    <div class="login-form-row">
+      <label>密码</label>
+      <input id="login-pwd" type="password" value="••••••••" placeholder="请输入密码">
+    </div>
+    <button class="login-btn" id="loginBtn" onclick="doLogin()">登录</button>
+    <div class="login-foot-note">登录即代表同意《途虎养车企业服务协议》</div>
+  </div>
+</div>
+
+<!-- ============ 选择登录企业 弹窗 ============ -->
+<div class="modal-overlay" id="modalSelectEnterprise">
+  <div class="modal" style="width:400px;">
+    <div class="modal-head"><h3>选择登录企业</h3><div class="modal-close" onclick="closeModal('modalSelectEnterprise')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+    <div class="modal-body">
+      <div style="font-size:12.5px;color:var(--text-400);margin-bottom:12px;">该手机号关联多家企业，请选择本次要登录的企业</div>
+      <div id="selectEnterpriseBody"></div>
+    </div>
+  </div>
+</div>
+
+<div class="app" id="mainApp" style="display:none;">
+
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">虎</div>
+      <div class="brand-text"><div class="t1">途虎养车</div><div class="t2">企业数字车管平台</div></div>
+    </div>
+    <nav class="nav">
+      <div class="nav-group-label">组织管理</div>
+      <div class="nav-item active" data-view="org">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M6 21V7l6-4 6 4v14M10 21v-6h4v6"/></svg>
+        组织架构管理
+      </div>
+      <div class="nav-item" data-view="accounts">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3.2"/><path d="M2.5 20c0-3.6 2.9-6.2 6.5-6.2s6.5 2.6 6.5 6.2"/><circle cx="17.5" cy="7.5" r="2.4"/><path d="M15.8 13.8c2.7.4 4.7 2.6 4.7 5.7"/></svg>
+        账号管理
+      </div>
+      <div class="nav-group-label">系统管理</div>
+      <div class="nav-item" data-view="logs">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v4H4z"/><path d="M4 4v16h16V8"/><path d="M8 12h8M8 16h5"/></svg>
+        操作日志
+      </div>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="foot-user"><div class="avatar" id="footAvatar">王</div><div><div class="name" id="footName">王督 · 车管专员</div><div class="role" id="footRole">途虎养车</div></div></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <button class="collapse-btn" id="collapseBtn" onclick="toggleSidebar()" title="收起/展开菜单">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/><path d="M14 9l-2 3 2 3"/></svg>
+        </button>
+        <div class="crumb" id="crumb">组织管理 / <b>组织架构管理</b></div>
+      </div>
+      <div class="user-menu">
+        <div class="user-trigger" onclick="toggleUserMenu(event)">
+          <div class="avatar sm" id="utAvatar">王</div>
+          <div class="ut-info">
+            <div class="ut-name" id="utName">王督</div>
+            <div class="ut-role" id="utRole">车管专员</div>
+          </div>
+          <svg class="ut-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="user-dropdown" id="userDropdown">
+          <div class="ud-head">
+            <div class="avatar" id="udAvatar">王</div>
+            <div>
+              <div class="ud-name" id="udName">王督</div>
+              <div class="ud-sub" id="udSub">车管专员 · 途虎养车</div>
+            </div>
+          </div>
+          <div class="ud-list">
+            <div class="ud-row"><span class="ud-label">登录账号</span><span class="ud-val mono">138 0000 0001</span></div>
+            <div class="ud-row"><span class="ud-label">所属企业</span><span class="ud-val" id="udNodeVal">途虎养车（总）</span></div>
+            <div class="ud-row"><span class="ud-label">角色</span><span class="ud-val" id="udRoleVal"><span class="pill red">超级管理员</span></span></div>
+            <div class="ud-row"><span class="ud-label">上次登录</span><span class="ud-val mono">2026-07-02 09:12</span></div>
+          </div>
+          <div class="ud-switch" id="udSwitchSection">
+            <div class="ud-switch-label">切换企业</div>
+            <div id="udSwitchList"></div>
+          </div>
+          <div class="ud-logout" onclick="askLogout()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+            退出登录
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ============ 组织架构管理 ============ -->
+      <section class="view active" id="view-org">
+        <div class="page-head">
+          <div><h1>组织架构管理</h1><div class="sub">维护企业主体下的组织层级，配置部门签约与开票信息</div></div>
+          <button class="btn btn-primary" onclick="openCreate()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>创建节点</button>
+        </div>
+
+        <div class="org-layout">
+          <!-- 左：组织树 -->
+          <div class="card">
+            <div class="tree-search"><input placeholder="搜索节点名称" oninput="filterTree(this.value)"></div>
+            <ul class="org-tree" id="orgTree"></ul>
+          </div>
+
+          <!-- 右：节点详情 -->
+          <div class="card" id="detailCard">
+            <div class="detail-head">
+              <div class="big-icon" id="dIcon"></div>
+              <div class="meta">
+                <h2 id="dName">—</h2>
+                <div class="row" id="dMeta"></div>
+              </div>
+              <span class="node-status-tag off" id="dStatusTag" style="display:none;margin-left:10px;">已禁用</span>
+              <div class="actions">
+                <button class="btn btn-ghost btn-sm" id="editNodeBtn" onclick="editNode()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>编辑节点</button>
+                <button class="btn btn-ghost btn-sm" id="toggleNodeBtn" onclick="toggleNodeStatusClick()"></button>
+                <button class="btn btn-ghost btn-sm" id="deleteNodeBtn" style="color:var(--danger);" onclick="openDeleteNode()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg>删除部门</button>
+              </div>
+            </div>
+
+            <div class="node-banner" id="nodeDisabledBanner" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
+              <div>该节点已禁用，下属账号当前<b>无法登录、无法下单</b>，可随时恢复启用。</div>
+            </div>
+
+            <div class="dtabs" id="dTabs">
+              <div class="dtab active" data-tab="staff">员工账号</div>
+              <div class="dtab" data-tab="vehicle">车辆</div>
+              <div class="dtab" data-tab="accounting" id="tabAccounting">签约信息</div>
+            </div>
+
+            <!-- 员工账号 -->
+            <div class="dpanel active" id="panel-staff">
+              <div class="toolbar">
+                <input class="input-sm" placeholder="搜索姓名 / 手机号" oninput="filterStaff(this.value)">
+                <select class="select-sm"><option>全部角色</option><option>车队经理</option><option>财务专员</option><option>普通车管员</option></select>
+                <select class="select-sm"><option>全部状态</option><option>启用</option><option>禁用</option></select>
+                <button class="btn btn-ghost btn-sm" style="margin-left:auto;" onclick="openImport()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M8 11l4 4 4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>导入账号</button>
+              </div>
+              <div class="table-wrap">
+                <table id="staffTable">
+                  <thead><tr><th>姓名</th><th>手机号</th><th>角色</th><th>状态</th><th>创建时间</th><th>操作</th></tr></thead>
+                  <tbody id="staffBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 车辆 -->
+            <div class="dpanel" id="panel-vehicle">
+              <div class="toolbar">
+                <input class="input-sm" placeholder="搜索车牌号 / 车架号" oninput="filterVehicle(this.value)">
+                <select class="select-sm"><option>全部状态</option><option>启用</option><option>禁用</option></select>
+                <button class="btn btn-ghost btn-sm" style="margin-left:auto;" onclick="openCreateVehicle()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M8 11l4 4 4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>导入车辆</button>
+              </div>
+              <div class="table-wrap">
+                <table id="vehicleTable">
+                  <thead><tr><th>车牌号</th><th>车架号</th><th>车型名称</th><th>状态</th><th>操作</th></tr></thead>
+                  <tbody id="vehicleBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 签约信息 -->
+            <div class="dpanel" id="panel-accounting">
+              <div style="display:flex;justify-content:flex-end;margin-bottom:6px;">
+                <button class="btn btn-ghost btn-sm" id="acctEditBtn" onclick="toggleAcctEdit()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>编辑信息</button>
+              </div>
+              <div class="info-section">
+                <h4>工商与税务</h4>
+                <div class="info-grid">
+                  <div class="info-item"><label>统一社会信用代码</label><input id="ac-credit" disabled></div>
+                  <div class="info-item"><label>法人姓名</label><input id="ac-legal" disabled></div>
+                </div>
+              </div>
+              <div class="info-section">
+                <h4>开票信息</h4>
+                <div class="info-grid">
+                  <div class="info-item full"><label>发票抬头</label><input id="ac-title" disabled></div>
+                  <div class="info-item"><label>税号</label><input id="ac-taxno" disabled></div>
+                  <div class="info-item"><label>电话</label><input id="ac-phone" disabled></div>
+                  <div class="info-item full"><label>注册地址</label><input id="ac-addr" disabled></div>
+                  <div class="info-item full"><label>开户银行及账号</label><input id="ac-bank" disabled></div>
+                </div>
+              </div>
+              <div style="display:none;justify-content:flex-end;gap:10px;" id="acctSaveBar">
+                <button class="btn btn-ghost btn-sm" onclick="toggleAcctEdit(true)">取消</button>
+                <button class="btn btn-primary btn-sm" onclick="toggleAcctEdit(true)">保存修改</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 账号管理 ============ -->
+      <section class="view" id="view-accounts">
+        <div class="page-head">
+          <div><h1>账号管理</h1><div class="sub">开通、编辑与停用司机登录账号</div></div>
+          <button class="btn btn-ghost" onclick="openImport()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M8 11l4 4 4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>导入账号</button>
+        </div>
+        <div class="card card-pad">
+          <div class="toolbar">
+            <input class="input-sm" id="acc-search" placeholder="搜索姓名 / 手机号" oninput="renderAllAccounts()">
+            <select class="select-sm" id="acc-fnode" onchange="renderAllAccounts()"><option value="">全部节点</option></select>
+            <select class="select-sm" id="acc-frole" onchange="renderAllAccounts()">
+              <option value="">全部角色</option><option>超级管理员</option><option>车队经理</option><option>财务专员</option><option>普通车管员</option>
+            </select>
+            <select class="select-sm" id="acc-fstatus" onchange="renderAllAccounts()">
+              <option value="">全部状态</option><option value="on">启用</option><option value="off">禁用</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table id="allAccountsTable">
+              <thead><tr><th>姓名</th><th>手机号</th><th>所属节点</th><th>角色</th><th>状态</th><th>创建时间</th><th>操作</th></tr></thead>
+              <tbody id="allAccountsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 操作日志 ============ -->
+      <section class="view" id="view-logs">
+        <div class="page-head">
+          <div><h1>操作日志</h1><div class="sub">记录后台新增、导入、编辑、修改等操作，可追溯操作人与操作时间</div></div>
+        </div>
+        <div class="card card-pad">
+          <div class="toolbar">
+            <input class="input-sm" id="logSearch" placeholder="搜索操作人 / 对象 / 详情" oninput="filterLogs()">
+            <select class="select-sm" id="logModuleFilter" onchange="filterLogs()">
+              <option value="">全部模块</option>
+              <option value="组织管理">组织管理</option>
+              <option value="车辆管理">车辆管理</option>
+              <option value="账号管理">账号管理</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table id="logsTable">
+              <thead><tr><th>操作时间</th><th>操作人</th><th>所属模块</th><th>操作类型</th><th>操作对象</th><th>详情</th></tr></thead>
+              <tbody id="logsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============ 创建/编辑节点 弹窗 ============ -->
+<div class="modal-overlay" id="modalNode">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modalTitle">创建节点</h3><div class="modal-close" onclick="closeModal('modalNode')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+    <div class="modal-body">
+      <div class="form-row"><label>节点名称<span class="req">*</span></label><input id="f-name" placeholder="请输入节点名称，如 华东分公司"></div>
+      <div class="form-2col">
+        <div class="form-row"><label>节点类型</label>
+          <select id="f-type" disabled>
+            <option value="dept" selected>部门</option>
+          </select>
+        </div>
+        <div class="form-row"><label>上级节点<span class="req">*</span></label>
+          <select id="f-parent"></select>
+        </div>
+      </div>
+      <div class="form-row"><label>所属企业主体<span class="req">*</span></label>
+        <select id="f-entity">
+          <option>徐工集团有限公司</option>
+          <option>徐工集团（华东）有限公司</option>
+          <option>徐工集团（华北）有限公司</option>
+          <option>徐工集团（华南）有限公司</option>
+        </select>
+      </div>
+      <div class="form-row" style="display:flex;align-items:center;gap:9px;">
+        <input type="checkbox" id="f-signed" onchange="onSignedChange()" style="width:16px;height:16px;">
+        <label style="margin:0;">该节点已签约（展示签约信息）</label>
+      </div>
+
+      <!-- 仅勾选「已签约」时显示 -->
+      <div class="conditional" id="condAccounting">
+        <div class="section-block">
+          <div class="block-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M6 21V7l6-4 6 4v14"/><path d="M10 9h4M10 13h4M10 17h4"/></svg>签约 · 工商信息</div>
+          <div class="form-2col">
+            <div class="form-row"><label>统一社会信用代码<span class="req">*</span></label><input id="sf-credit" placeholder="18 位社会信用代码"></div>
+            <div class="form-row"><label>法人姓名<span class="req">*</span></label><input id="sf-legal" placeholder="请输入法人姓名"></div>
+          </div>
+        </div>
+        <div class="section-block">
+          <div class="block-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h9l3 3v17l-3-2-3 2-3-2-3 2V4a2 2 0 012-2z"/><path d="M8 8h8M8 12h8"/></svg>签约 · 开票信息</div>
+          <div class="form-row"><label>发票抬头<span class="req">*</span></label><input id="sf-title" placeholder="开票单位全称"></div>
+          <div class="form-2col">
+            <div class="form-row"><label>税号<span class="req">*</span></label><input id="sf-taxno" placeholder="纳税人识别号"></div>
+            <div class="form-row"><label>电话<span class="req">*</span></label><input id="sf-phone" placeholder="开票电话"></div>
+          </div>
+          <div class="form-row"><label>注册地址<span class="req">*</span></label><input id="sf-addr" placeholder="营业执照注册地址"></div>
+          <div class="form-row"><label>开户银行及账号<span class="req">*</span></label><input id="sf-bank" placeholder="如：中国银行XX支行 6200 0000 0000 0000"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('modalNode')">取消</button><button class="btn btn-primary" onclick="saveNodeModal()" id="nodeModalConfirmBtn">确认创建</button></div>
+  </div>
+</div>
+
+<!-- ============ 批量导入账号 弹窗 ============ -->
+<div class="modal-overlay" id="modalImport">
+  <div class="modal" style="width:720px;">
+    <div class="modal-head"><h3>批量导入账号</h3><div class="modal-close" onclick="closeModal('modalImport')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+    <div class="modal-body">
+      <!-- 步骤条 -->
+      <div class="steps-bar">
+        <div class="step-node active" data-step="1"><span class="dot">1</span>下载模板</div>
+        <div class="step-line"></div>
+        <div class="step-node" data-step="2"><span class="dot">2</span>上传表格</div>
+        <div class="step-line"></div>
+        <div class="step-node" data-step="3"><span class="dot">3</span>预览并确认</div>
+      </div>
+
+      <!-- 步骤1：下载模板 -->
+      <div class="istep" id="istep-1">
+        <div class="tpl-note">
+          <div class="tpl-note-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg></div>
+          <div>
+            <b>角色如何授予？</b>模板中的「角色」列已内置下拉选项，仅可从贵企业当前已配置的角色中选择，避免填写错误。系统导入时会按角色名称自动匹配并授权。
+          </div>
+        </div>
+        <div class="tpl-cols">
+          <div class="tpl-cols-title">模板包含以下列（<span style="color:var(--red);">*</span> 为必填）：</div>
+          <div class="tpl-col-list">
+            <span class="tpl-chip">姓名 <i>*</i></span>
+            <span class="tpl-chip">手机号 <i>*</i></span>
+            <span class="tpl-chip">所属节点 <i>*</i><em>下拉</em></span>
+            <span class="tpl-chip">角色 <i>*</i><em>下拉</em></span>
+            <span class="tpl-chip">备注</span>
+          </div>
+          <div class="tpl-roles">
+            当前可选角色：
+            <span class="pill red" style="margin-right:6px;">超级管理员</span>
+            <span class="pill red" style="margin-right:6px;">车队经理</span>
+            <span class="pill red" style="margin-right:6px;">财务专员</span>
+            <span class="pill red">普通车管员</span>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px;" onclick="downloadTpl()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M8 11l4 4 4-4M4 19h16"/></svg>下载导入模板（.xlsx）
+        </button>
+        <div class="tpl-downloaded" id="tplDownloaded">✓ 模板已生成下载，请填写后进入下一步上传</div>
+      </div>
+
+      <!-- 步骤2：上传 -->
+      <div class="istep" id="istep-2" style="display:none;">
+        <div class="dropzone" id="dropzone" onclick="simulateUpload()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v12M8 11l4 4 4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+          <div class="dz-main">点击或拖拽上传已填写的模板文件</div>
+          <div class="dz-sub">支持 .xlsx / .xls，单次最多 500 行</div>
+        </div>
+        <div class="uploaded-file" id="uploadedFile" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+          <div style="flex:1;"><div class="uf-name">徐工-账号导入模板.xlsx</div><div class="uf-meta">6 行数据 · 解析完成</div></div>
+          <a onclick="event.stopPropagation();resetUpload()" style="color:var(--red);font-size:12.5px;font-weight:600;cursor:pointer;">重新上传</a>
+        </div>
+      </div>
+
+      <!-- 步骤3：预览校验 -->
+      <div class="istep" id="istep-3" style="display:none;">
+        <div class="preview-summary">
+          <div class="ps-item ok"><b id="okCount">4</b><span>校验通过</span></div>
+          <div class="ps-item err"><b id="errCount">2</b><span>存在问题</span></div>
+          <div class="ps-hint">仅校验通过的行会被导入，标红行请修正表格后重新上传</div>
+        </div>
+        <div class="table-wrap" style="max-height:280px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;">
+          <table class="preview-table">
+            <thead><tr><th>行</th><th>姓名</th><th>手机号</th><th>所属节点</th><th>角色</th><th>校验结果</th></tr></thead>
+            <tbody id="previewBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot" id="importFoot"></div>
+  </div>
+</div>
+
+<!-- ============ 编辑账号 弹窗 ============ -->
+<div class="modal-overlay" id="modalEditAccount">
+  <div class="modal">
+    <div class="modal-head"><h3>编辑账号</h3><div class="modal-close" onclick="closeModal('modalEditAccount')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+    <div class="modal-body">
+      <div class="form-row"><label>姓名<span class="req">*</span></label><input id="ea-name"></div>
+      <div class="form-row"><label>角色<span class="req">*</span></label>
+        <select id="ea-role"><option>超级管理员</option><option>车队经理</option><option>财务专员</option><option>普通车管员</option></select>
+      </div>
+      <div class="form-row"><label>所属节点<span class="req">*</span></label><select id="ea-node" onchange="onEaNodeChange()"></select></div>
+      <div class="form-row"><label>所属主体</label><input id="ea-entity" disabled></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('modalEditAccount')">取消</button><button class="btn btn-primary" onclick="saveEditAccount()">保存修改</button></div>
+  </div>
+</div>
+
+<!-- ============ 新增/编辑车辆 弹窗 ============ -->
+<div class="modal-overlay" id="modalVehicle">
+  <div class="modal">
+    <div class="modal-head"><h3 id="vModalTitle">新增车辆</h3><div class="modal-close" onclick="closeModal('modalVehicle')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+    <div class="modal-body">
+      <div class="form-2col">
+        <div class="form-row"><label>车牌号<span class="req">*</span></label><input id="v-plate" placeholder="如 苏B·D8888"></div>
+        <div class="form-row"><label>车架号<span class="req">*</span></label><input id="v-vin" placeholder="请输入车架号（VIN）"></div>
+      </div>
+      <div class="form-row" id="v-model-row"><label>车型名称<span class="req">*</span></label><input id="v-model" placeholder="请输入车型名称"></div>
+      <div class="form-row"><label>所属节点<span class="req">*</span></label><select id="v-node" onchange="onVNodeChange()"></select></div>
+      <div class="form-row" id="v-entity-row" style="display:none;"><label>所属主体</label><input id="v-entity" disabled></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('modalVehicle')">取消</button><button class="btn btn-primary" onclick="saveVehicle()">保存</button></div>
+  </div>
+</div>
+
+<!-- ============ 删除车辆 确认弹窗 ============ -->
+<div class="modal-overlay" id="modalDelVehicle">
+  <div class="modal" style="width:420px;">
+    <div class="modal-head"><h3>删除车辆</h3><div class="modal-close" onclick="closeModal('modalDelVehicle')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+    <div class="modal-body">
+      <div class="del-warn">
+        <div class="del-warn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></div>
+        <div>确认删除车辆 <b id="delv-plate"></b>（<span class="mono" id="delv-vin"></span>）？<br><span style="color:var(--text-400);font-size:12.5px;">删除后该车辆信息将不可恢复。</span></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('modalDelVehicle')">取消</button><button class="btn btn-danger" onclick="confirmDeleteVehicle()">确认删除</button></div>
+  </div>
+</div>
+
+<!-- ============ 员工离职 确认弹窗 ============ -->
+<div class="modal-overlay" id="modalOffboard">
+  <div class="modal" style="width:440px;">
+    <div class="modal-head"><h3>员工离职</h3><div class="modal-close" onclick="closeModal('modalOffboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+    <div class="modal-body" id="offboardBody"></div>
+    <div class="modal-foot" id="offboardFoot"></div>
+  </div>
+</div>
+
+<!-- ============ 禁用节点 确认弹窗 ============ -->
+<div class="modal-overlay" id="modalDisableNode">
+  <div class="modal" style="width:440px;">
+    <div class="modal-head"><h3>禁用节点</h3><div class="modal-close" onclick="closeModal('modalDisableNode')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+    <div class="modal-body">
+      <div class="del-warn">
+        <div class="del-warn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></div>
+        <div>确认禁用节点 <b id="dis-name"></b>？<br><span style="color:var(--text-400);font-size:12.5px;">禁用后，该节点下所有员工账号将<b style="color:var(--danger);">无法登录、无法下单</b>，可随时恢复启用，不影响历史数据。</span></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('modalDisableNode')">取消</button><button class="btn btn-danger" onclick="confirmDisableNode()">确认禁用</button></div>
+  </div>
+</div>
+
+<!-- ============ 删除部门 弹窗 ============ -->
+<div class="modal-overlay" id="modalDeleteNode">
+  <div class="modal" style="width:460px;">
+    <div class="modal-head"><h3>删除部门</h3><div class="modal-close" onclick="closeModal('modalDeleteNode')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+    <div class="modal-body" id="delNodeBody"></div>
+    <div class="modal-foot" id="delNodeFoot"></div>
+  </div>
+</div>
+
+<!-- ============ 退出登录 确认弹窗 ============ -->
+<div class="modal-overlay" id="modalLogout">
+  <div class="modal" style="width:400px;">
+    <div class="modal-head"><h3>退出登录</h3><div class="modal-close" onclick="closeModal('modalLogout')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div></div>
+    <div class="modal-body">
+      <div class="del-warn">
+        <div class="del-warn-icon" style="background:var(--red-light);color:var(--red);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></div>
+        <div>确认退出当前账号 <b>王督</b>？<br><span style="color:var(--text-400);font-size:12.5px;">退出后需重新登录才能继续使用。</span></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('modalLogout')">取消</button><button class="btn btn-primary" onclick="doLogout()">确认退出</button></div>
+  </div>
+</div>
+
+<script>
+/* ===== 批量导入流程 ===== */
+let importStep=1;
+const previewRows=[
+  {name:'刘洋',phone:'138 0000 6001',node:'华东分公司',role:'车队经理',ok:true},
+  {name:'黄蕾',phone:'138 0000 6002',node:'上海分部',role:'普通车管员',ok:true},
+  {name:'孙浩',phone:'138 0000 6003',node:'南京分部',role:'财务专员',ok:true},
+  {name:'王凯',phone:'138 0000 6004',node:'北京分部',role:'普通车管员',ok:true},
+  {name:'李梅',phone:'138 0000 6005',node:'华南分公司',role:'区域主管',ok:false,reason:'角色「区域主管」不存在，请从下拉重选'},
+  {name:'张勇',phone:'138 0000 1111',node:'深圳分部',role:'普通车管员',ok:false,reason:'手机号已存在，该账号重复'},
+];
+
+function openImport(){
+  importStep=1;
+  document.getElementById('tplDownloaded').classList.remove('show');
+  resetUpload();
+  gotoStep(1);
+  openModal('modalImport');
+}
+function gotoStep(n){
+  importStep=n;
+  [1,2,3].forEach(i=>{
+    document.getElementById('istep-'+i).style.display = i===n?'block':'none';
+    const sn=document.querySelector('.step-node[data-step="'+i+'"]');
+    sn.classList.toggle('active', i===n);
+    sn.classList.toggle('done', i<n);
+  });
+  renderImportFoot();
+  if(n===3) renderPreview();
+}
+function renderImportFoot(){
+  const foot=document.getElementById('importFoot');
+  if(importStep===1){
+    foot.innerHTML=`<button class="btn btn-ghost" onclick="closeModal('modalImport')">取消</button>
+      <button class="btn btn-primary" onclick="gotoStep(2)">下一步：上传表格</button>`;
+  }else if(importStep===2){
+    const uploaded=document.getElementById('uploadedFile').style.display!=='none';
+    foot.innerHTML=`<button class="btn btn-ghost" onclick="gotoStep(1)">上一步</button>
+      <button class="btn btn-primary" ${uploaded?'':'disabled style="opacity:.5;cursor:not-allowed;"'} onclick="gotoStep(3)">下一步：预览校验</button>`;
+  }else{
+    const okN=previewRows.filter(r=>r.ok).length;
+    foot.innerHTML=`<button class="btn btn-ghost" onclick="gotoStep(2)">上一步</button>
+      <button class="btn btn-primary" onclick="confirmImport()">确认导入 ${okN} 条</button>`;
+  }
+}
+function downloadTpl(){ document.getElementById('tplDownloaded').classList.add('show'); }
+function simulateUpload(){
+  document.getElementById('dropzone').style.display='none';
+  document.getElementById('uploadedFile').style.display='flex';
+  renderImportFoot();
+}
+function resetUpload(){
+  const dz=document.getElementById('dropzone'), uf=document.getElementById('uploadedFile');
+  if(dz) dz.style.display='flex';
+  if(uf) uf.style.display='none';
+  renderImportFoot();
+}
+function renderPreview(){
+  document.getElementById('okCount').textContent=previewRows.filter(r=>r.ok).length;
+  document.getElementById('errCount').textContent=previewRows.filter(r=>!r.ok).length;
+  const body=document.getElementById('previewBody');
+  body.innerHTML=previewRows.map((r,i)=>`
+    <tr class="${r.ok?'':'row-err'}">
+      <td class="mono">${i+2}</td>
+      <td>${r.name}</td>
+      <td class="mono">${r.phone}</td>
+      <td>${r.node}</td>
+      <td>${r.ok?r.role:`<span style="color:var(--danger);">${r.role}</span>`}</td>
+      <td>${r.ok?'<span class="pill green">通过</span>':`<span class="pill" style="background:var(--danger-light);color:var(--danger);">${r.reason}</span>`}</td>
+    </tr>`).join('');
+}
+function confirmImport(){
+  const okN=previewRows.filter(r=>r.ok).length;
+  closeModal('modalImport');
+  logAction('账号管理','导入','员工账号',`批量导入了 ${okN} 条账号数据（共解析 ${previewRows.length} 行）`);
+  showToast(`成功导入 ${okN} 个账号，${previewRows.length-okN} 行因校验未通过已跳过`);
+}
+function showToast(msg){
+  let t=document.getElementById('toast');
+  if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.body.appendChild(t); }
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(window._toastT); window._toastT=setTimeout(()=>t.classList.remove('show'),3200);
+}
+</script>
+<script>
+/* ===== 原有数据脚本 ===== */
+// 登录账户：同一手机号在多家企业下可能拥有不同身份，登录 / 切换企业时使用
+const LOGIN_ACCOUNTS=[
+  {id:'acc1',phone:'138 0000 0001',enterpriseNodeId:'n1',enterpriseName:'徐工集团',role:'超级管理员',userName:'王督',avatar:'王'},
+  {id:'acc2',phone:'138 0000 0001',enterpriseNodeId:'n2',enterpriseName:'华东分公司',role:'超级管理员',userName:'王督',avatar:'王'},
+  {id:'acc3',phone:'138 0000 0001',enterpriseNodeId:'n7',enterpriseName:'华南分公司',role:'车队经理',userName:'王督',avatar:'王'},
+  {id:'acc4',phone:'138 0000 4444',enterpriseNodeId:'n2',enterpriseName:'华东分公司',role:'财务专员',userName:'赵敏',avatar:'赵'},
+];
+let currentAccountId=null; // 当前登录/切换到的企业身份
+let currentPhone=null;     // 当前登录手机号，用于限定"切换企业"的可选范围
+function accountsForPhone(phone){ return LOGIN_ACCOUNTS.filter(a=>a.phone===phone); }
+
+// 节点：id, name, type(固定为 dept · 部门), parent, entity, signed(是否已签约), staff[], vehicle[], accounting{}
+const nodes = {
+  n1:{id:'n1',name:'徐工集团',type:'dept',parent:null,entity:'徐工集团有限公司',signed:true,
+      accounting:{credit:'91320000MA1XXXXX0Q',legal:'王民生',title:'徐工集团有限公司',taxno:'91320000MA1XXXXX0Q',phone:'0516-8788 0000',addr:'江苏省徐州市经济技术开发区徐工大道',bank:'中国银行徐州分行 6210 0000 0000 0001'},status:true,
+      staff:['s1','s2'],vehicle:['v1']},
+  n2:{id:'n2',name:'华东分公司',type:'dept',parent:'n1',entity:'徐工集团（华东）有限公司',signed:true,
+      accounting:{credit:'91310000MA7YYYYY2X',legal:'刘芳',title:'徐工集团（华东）有限公司',taxno:'91310000MA7YYYYY2X',phone:'021-6600 1234',addr:'上海市徐汇区宜山路 700 号',bank:'工商银行上海分行 6222 0000 0000 0002'},status:true,
+      staff:['s3','s4','s5'],vehicle:['v2','v3']},
+  n3:{id:'n3',name:'上海分部',type:'dept',parent:'n2',entity:'徐工集团（华东）有限公司',signed:false,accounting:null,status:true,staff:['s6','s7'],vehicle:['v4']},
+  n4:{id:'n4',name:'南京分部',type:'dept',parent:'n2',entity:'徐工集团（华东）有限公司',signed:false,accounting:null,status:true,staff:['s8'],vehicle:[]},
+  n5:{id:'n5',name:'华北分公司',type:'dept',parent:'n1',entity:'徐工集团（华北）有限公司',signed:true,
+      accounting:{credit:'91110000MA9WWWWW4Y',legal:'赵海峰',title:'徐工集团（华北）有限公司',taxno:'91110000MA9WWWWW4Y',phone:'010-8500 6789',addr:'北京市朝阳区建国路 88 号',bank:'农业银行北京分行 6228 0000 0000 0004'},status:true,
+      staff:['s9','s10'],vehicle:['v5']},
+  n6:{id:'n6',name:'北京分部',type:'dept',parent:'n5',entity:'徐工集团（华北）有限公司',signed:false,accounting:null,status:true,staff:['s11'],vehicle:[]},
+  n7:{id:'n7',name:'华南分公司',type:'dept',parent:'n1',entity:'徐工集团（华南）有限公司',signed:false,
+      accounting:{credit:'91440000MA5ZZZZZ8H',legal:'陈国华',title:'徐工集团（华南）有限公司',taxno:'91440000MA5ZZZZZ8H',phone:'020-8300 5678',addr:'广东省广州市天河区珠江新城华夏路 10 号',bank:'建设银行广州分行 6217 0000 0000 0003'},status:true,
+      staff:['s12','s13'],vehicle:['v6','v7']},
+};
+const staff = {
+  s1:{name:'王督',phone:'138 0000 0001',role:'超级管理员',status:true,ct:'2025-06-01',pendingApprovals:0,pendingOrders:0},
+  s2:{name:'李国',phone:'138 0000 0002',role:'财务专员',status:true,ct:'2025-06-03',pendingApprovals:0,pendingOrders:0},
+  s3:{name:'刘芳',phone:'138 0000 0003',role:'车队经理',status:true,ct:'2025-07-11',pendingApprovals:2,pendingOrders:0},
+  s4:{name:'张伟',phone:'138 0000 1111',role:'普通车管员',status:true,ct:'2025-11-02',pendingApprovals:0,pendingOrders:1},
+  s5:{name:'孙敏',phone:'138 0000 0055',role:'财务专员',status:false,ct:'2026-02-18',pendingApprovals:0,pendingOrders:0},
+  s6:{name:'周涛',phone:'138 0000 0006',role:'普通车管员',status:true,ct:'2025-09-20',pendingApprovals:0,pendingOrders:0},
+  s7:{name:'吴倩',phone:'138 0000 0007',role:'普通车管员',status:true,ct:'2025-10-05',pendingApprovals:0,pendingOrders:0},
+  s8:{name:'李娜',phone:'138 0000 2222',role:'普通车管员',status:true,ct:'2025-12-14',pendingApprovals:0,pendingOrders:0},
+  s9:{name:'王强',phone:'138 0000 3333',role:'车队经理',status:false,ct:'2025-08-20',pendingApprovals:0,pendingOrders:0},
+  s10:{name:'马丽',phone:'138 0000 0010',role:'普通车管员',status:true,ct:'2026-01-22',pendingApprovals:0,pendingOrders:0},
+  s11:{name:'郑凯',phone:'138 0000 0011',role:'普通车管员',status:true,ct:'2026-03-09',pendingApprovals:0,pendingOrders:0},
+  s12:{name:'赵敏',phone:'138 0000 4444',role:'财务专员',status:true,ct:'2026-01-09',pendingApprovals:1,pendingOrders:2},
+  s13:{name:'陈杰',phone:'138 0000 5555',role:'普通车管员',status:true,ct:'2026-06-28',pendingApprovals:0,pendingOrders:0},
+};
+// 车辆：id, plate(车牌号), vin(车架号), model(车型名称), status(启用/禁用)
+const vehicles = {
+  v1:{plate:'苏B·D0001',vin:'LSGJA52U0LA000001',model:'解放 J6P 牵引车',status:true},
+  v2:{plate:'沪A·F1234',vin:'LSGJA52U0LA000002',model:'东风天龙 载货车',status:true},
+  v3:{plate:'沪A·F5678',vin:'LSGJA52U0LA000003',model:'福田欧曼 载货车',status:false},
+  v4:{plate:'沪B·K2468',vin:'LSGJA52U0LA000004',model:'江淮格尔发 载货车',status:true},
+  v5:{plate:'京N·M3690',vin:'LSGJA52U0LA000005',model:'重汽豪沃 牵引车',status:true},
+  v6:{plate:'粤A·P7531',vin:'LSGJA52U0LA000006',model:'陕汽德龙 载货车',status:true},
+  v7:{plate:'粤A·P8642',vin:'LSGJA52U0LA000007',model:'一汽解放 载货车',status:false},
+};
+
+/* ===== 操作日志 ===== */
+const CURRENT_USER='王督';
+function nowStr(){
+  const d=new Date();
+  const p=n=>String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+}
+const operationLogs=[
+  {time:'2026-08-20 09:12:03',operator:'王督',module:'组织管理',action:'编辑',target:'部门「华北分公司」',detail:'更新了节点基础信息及签约信息'},
+  {time:'2026-08-19 16:40:21',operator:'王督',module:'车辆管理',action:'新增',target:'车辆「京N·M3690」',detail:'通过导入车辆新增了 1 条车辆记录'},
+  {time:'2026-08-18 11:05:47',operator:'刘芳',module:'账号管理',action:'编辑',target:'账号「张伟」',detail:'修改了角色为车队经理'},
+  {time:'2026-08-15 14:22:10',operator:'王督',module:'账号管理',action:'导入',target:'员工账号',detail:'批量导入了 6 条账号数据'},
+];
+function logAction(module,action,target,detail){
+  operationLogs.unshift({time:nowStr(),operator:CURRENT_USER,module,action,target,detail});
+  if(document.getElementById('view-logs')&&document.getElementById('view-logs').classList.contains('active')) renderLogs();
+}
+function renderLogs(){
+  const body=document.getElementById('logsBody');
+  if(!body) return;
+  const kw=(document.getElementById('logSearch')?.value||'').trim().toLowerCase();
+  const modFilter=document.getElementById('logModuleFilter')?.value||'';
+  const list=operationLogs.filter(l=>{
+    if(modFilter && l.module!==modFilter) return false;
+    if(kw && !(l.operator.toLowerCase().includes(kw)||l.target.toLowerCase().includes(kw)||l.detail.toLowerCase().includes(kw))) return false;
+    return true;
+  });
+  body.innerHTML='';
+  if(!list.length){
+    body.innerHTML=`<tr><td colspan="6"><div class="empty-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2.5"/></svg><div>暂无匹配的操作记录</div></div></td></tr>`;
+    return;
+  }
+  list.forEach(l=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="mono">${l.time}</td><td>${l.operator}</td><td>${l.module}</td>
+      <td><span class="pill gray">${l.action}</span></td><td>${l.target}</td><td style="color:var(--text-600);">${l.detail}</td>`;
+    body.appendChild(tr);
+  });
+}
+function filterLogs(){ renderLogs(); }
+
+const typeLabel={'dept':'部门'};
+const badgeLabel={'dept':'部门'};
+const iconPath={
+  'dept':'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>'
+};
+const houseIcon='<path d="M4 21V9l8-6 8 6v12"/><path d="M4 21h16"/><path d="M10 21v-5h4v5"/>';
+
+/* ===== 组织树渲染 ===== */
+let selectedId='n1';
+let acctEditing=false;
+
+function childrenOf(id){return Object.values(nodes).filter(n=>n.parent===id);}
+function countStaffDeep(id){
+  let c=(nodes[id].staff||[]).length;
+  childrenOf(id).forEach(ch=>c+=countStaffDeep(ch.id));
+  return c;
+}
+function countVehicleDeep(id){
+  let c=(nodes[id].vehicle||[]).length;
+  childrenOf(id).forEach(ch=>c+=countVehicleDeep(ch.id));
+  return c;
+}
+function buildTree(id,container){
+  const node=nodes[id];
+  const li=document.createElement('li');
+  const kids=childrenOf(id);
+  const nodeEl=document.createElement('div');
+  nodeEl.className='node'+(id===selectedId?' sel':'');
+  nodeEl.dataset.id=id;
+  nodeEl.dataset.name=node.name;
+  const isRoot = node.parent===null;
+  const rootIcon = isRoot
+    ? `<div class="nicon root"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${houseIcon}</svg></div>`
+    : '';
+  const signedIcon = (!isRoot && node.signed)
+    ? `<div class="nicon root" style="color:var(--red);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${houseIcon}</svg></div>`
+    : '';
+  const signedBadge = node.signed
+    ? `<span class="badge signed">已签约</span>`
+    : '';
+  const disabledBadge = (!isRoot && !node.status)
+    ? `<span class="node-status-tag off">已禁用</span>`
+    : '';
+  nodeEl.innerHTML=`
+    <svg class="caret ${kids.length?'':'empty'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg>
+    ${rootIcon}${signedIcon}
+    <span class="nname" ${(!isRoot && !node.status)?'style="color:var(--text-400);"':''}>${node.name}</span>
+    ${signedBadge}
+    ${disabledBadge}
+    <span class="cnt">${countStaffDeep(id)}人 · ${countVehicleDeep(id)}辆</span>`;
+  const caret=nodeEl.querySelector('.caret');
+  li.appendChild(nodeEl);
+
+  let childUl=null;
+  if(kids.length){
+    childUl=document.createElement('ul');
+    childUl.className='node-children';
+    kids.forEach(ch=>buildTree(ch.id,childUl));
+    li.appendChild(childUl);
+  }
+  nodeEl.addEventListener('click',e=>{
+    if(e.target.closest('.caret') && kids.length){
+      caret.classList.toggle('collapsed');
+      childUl.classList.toggle('collapsed');
+      return;
+    }
+    selectNode(id);
+  });
+  container.appendChild(li);
+}
+function renderTree(){
+  const root=document.getElementById('orgTree');
+  root.innerHTML='';
+  const top=Object.values(nodes).filter(n=>n.parent===null);
+  top.forEach(n=>buildTree(n.id,root));
+}
+
+function selectNode(id){
+  selectedId=id;
+  acctEditing=false;
+  document.querySelectorAll('.node').forEach(n=>n.classList.toggle('sel',n.dataset.id===id));
+  renderDetail();
+}
+
+function renderDetail(){
+  const node=nodes[selectedId];
+  // header
+  const icon=document.getElementById('dIcon');
+  icon.className='big-icon nicon-dept';
+  icon.style.background=node.signed?'var(--red-light)':'#eef0f4';
+  icon.style.color=node.signed?'var(--red)':'var(--text-600)';
+  icon.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${iconPath['dept']}</svg>`;
+  document.getElementById('dName').textContent=node.name;
+  const parentName=node.parent?nodes[node.parent].name:'—（顶级节点）';
+  document.getElementById('dMeta').innerHTML=
+    `<span class="pill gray">部门</span>`+
+    (node.signed?`<span class="pill red">已签约</span>`:'')+
+    `<span>上级：${parentName}</span><span>·</span><span>主体：${node.entity}</span>`;
+
+  // 签约信息 tab 显隐
+  const tabAcct=document.getElementById('tabAccounting');
+  if(node.signed){ tabAcct.classList.remove('hidden'); }
+  else{ tabAcct.classList.add('hidden'); if(document.getElementById('panel-accounting').classList.contains('active')) switchTab('staff'); }
+
+  // 启用/禁用、删除部门（顶级企业主体节点不支持）
+  const isRootNode = node.parent===null;
+  const toggleBtn=document.getElementById('toggleNodeBtn');
+  const deleteBtn=document.getElementById('deleteNodeBtn');
+  if(isRootNode){
+    toggleBtn.style.display='none';
+    deleteBtn.style.display='none';
+  }else{
+    toggleBtn.style.display='';
+    deleteBtn.style.display='';
+    if(node.status){
+      toggleBtn.style.color='';
+      toggleBtn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>禁用节点`;
+    }else{
+      toggleBtn.style.color='var(--success)';
+      toggleBtn.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>恢复启用`;
+    }
+  }
+  document.getElementById('dStatusTag').style.display = (!isRootNode && !node.status) ? '' : 'none';
+  document.getElementById('nodeDisabledBanner').style.display = (!isRootNode && !node.status) ? '' : 'none';
+
+  // 员工表
+  renderStaff();
+  // 车辆表
+  renderVehicle();
+  // 签约信息
+  if(node.signed) fillAccounting(node.accounting);
+}
+
+function renderStaff(){
+  const node=nodes[selectedId];
+  const body=document.getElementById('staffBody');
+  body.innerHTML='';
+  const list=node.staff||[];
+  if(!list.length){
+    body.innerHTML=`<tr><td colspan="6"><div class="empty-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="7" r="3.2"/><path d="M2.5 20c0-3.6 2.9-6.2 6.5-6.2s6.5 2.6 6.5 6.2"/></svg><div>该节点下暂无员工账号</div></div></td></tr>`;
+    return;
+  }
+  list.forEach(sid=>{
+    const s=staff[sid];
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${s.name}</td><td class="mono">${s.phone}</td><td>${s.role}</td>
+      <td><div class="toggle ${s.status?'on':''}" onclick="toggleStatus('${sid}',this)"></div></td>
+      <td class="mono">${s.ct}</td>
+      <td class="row-actions"><a onclick="openEditAccount('${sid}')">编辑</a><a class="danger" onclick="askOffboard('${sid}')">离职</a></td>`;
+    body.appendChild(tr);
+  });
+}
+function filterStaff(q){
+  q=q.trim().toLowerCase();
+  document.querySelectorAll('#staffBody tr').forEach(tr=>{tr.style.display=tr.innerText.toLowerCase().includes(q)?'':'none';});
+}
+
+/* ===== 车辆表 ===== */
+function nodeOfVehicle(vid){
+  return Object.values(nodes).find(n=>(n.vehicle||[]).includes(vid))?.id || null;
+}
+function renderVehicle(){
+  const body=document.getElementById('vehicleBody');
+  if(!body) return;
+  body.innerHTML='';
+  const node=nodes[selectedId];
+  const list=node.vehicle||[];
+  if(!list.length){
+    body.innerHTML=`<tr><td colspan="5"><div class="empty-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="9" width="18" height="9" rx="2"/><path d="M6 9V7a2 2 0 012-2h8a2 2 0 012 2v2"/></svg><div>该节点下暂无车辆</div></div></td></tr>`;
+    return;
+  }
+  list.forEach(vid=>{
+    const v=vehicles[vid];
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="mono">${v.plate}</td><td class="mono">${v.vin}</td><td>${v.model}</td>
+      <td><div class="toggle ${v.status?'on':''}" onclick="toggleVehicleStatus('${vid}',this)"></div></td>
+      <td class="row-actions"><a onclick="openEditVehicle('${vid}')">编辑</a><a class="danger" onclick="askDeleteVehicle('${vid}')">删除</a></td>`;
+    body.appendChild(tr);
+  });
+}
+function filterVehicle(q){
+  q=q.trim().toLowerCase();
+  document.querySelectorAll('#vehicleBody tr').forEach(tr=>{tr.style.display=tr.innerText.toLowerCase().includes(q)?'':'none';});
+}
+function toggleVehicleStatus(vid,el){
+  vehicles[vid].status=!vehicles[vid].status;
+  el.classList.toggle('on',vehicles[vid].status);
+  logAction('车辆管理',vehicles[vid].status?'启用':'禁用',`车辆「${vehicles[vid].plate}」`,vehicles[vid].status?'恢复启用车辆':'禁用车辆');
+}
+
+let editingVid=null;
+function fillVehicleNodeSelect(curNode){
+  const sel=document.getElementById('v-node');
+  sel.innerHTML=Object.values(nodes).map(n=>`<option value="${n.id}" ${n.id===curNode?'selected':''}>${nodePath(n.id)}</option>`).join('');
+}
+function onVNodeChange(){
+  const nid=document.getElementById('v-node').value;
+  if(document.getElementById('v-entity-row').style.display!=='none'){
+    document.getElementById('v-entity').value=nid?nodes[nid].entity:'';
+  }
+}
+function openCreateVehicle(){
+  editingVid=null;
+  document.getElementById('vModalTitle').textContent='新增车辆';
+  document.getElementById('v-plate').value='';
+  document.getElementById('v-vin').value='';
+  document.getElementById('v-model').value='';
+  document.getElementById('v-plate').disabled=false;
+  document.getElementById('v-vin').disabled=false;
+  document.getElementById('v-model').disabled=false;
+  document.getElementById('v-model-row').style.display='';
+  document.getElementById('v-entity-row').style.display='none';
+  fillVehicleNodeSelect(selectedId);
+  openModal('modalVehicle');
+}
+function openEditVehicle(vid){
+  editingVid=vid;
+  const v=vehicles[vid];
+  const curNode=nodeOfVehicle(vid);
+  document.getElementById('vModalTitle').textContent='编辑车辆';
+  document.getElementById('v-plate').value=v.plate;
+  document.getElementById('v-plate').disabled=false;
+  document.getElementById('v-vin').value=v.vin;
+  document.getElementById('v-vin').disabled=false;
+  document.getElementById('v-model').value=v.model;
+  document.getElementById('v-model').disabled=true;
+  document.getElementById('v-model-row').style.display='';
+  fillVehicleNodeSelect(curNode);
+  document.getElementById('v-entity-row').style.display='';
+  document.getElementById('v-entity').value=curNode?nodes[curNode].entity:'';
+  openModal('modalVehicle');
+}
+function saveVehicle(){
+  const plate=document.getElementById('v-plate').value.trim();
+  const vin=document.getElementById('v-vin').value.trim();
+  const newNode=document.getElementById('v-node').value;
+  if(!plate||!vin||!newNode){ showToast('请完整填写车牌号 / 车架号 / 所属节点'); return; }
+  if(editingVid){
+    const v=vehicles[editingVid];
+    v.plate=plate; v.vin=vin;
+    const oldNode=nodeOfVehicle(editingVid);
+    if(newNode!==oldNode){
+      if(oldNode) nodes[oldNode].vehicle=nodes[oldNode].vehicle.filter(x=>x!==editingVid);
+      if(!nodes[newNode].vehicle) nodes[newNode].vehicle=[];
+      nodes[newNode].vehicle.push(editingVid);
+    }
+    logAction('车辆管理','编辑',`车辆「${plate}」`,'更新了车牌号/车架号/所属节点');
+    showToast('车辆信息已更新');
+  }else{
+    const model=document.getElementById('v-model').value.trim()||'未填写车型';
+    const vid='v'+(Object.keys(vehicles).length+1)+'_'+Date.now();
+    vehicles[vid]={plate,vin,model,status:true};
+    if(!nodes[newNode].vehicle) nodes[newNode].vehicle=[];
+    nodes[newNode].vehicle.push(vid);
+    logAction('车辆管理','新增',`车辆「${plate}」`,'新增了一条车辆记录');
+    showToast('车辆已新增');
+  }
+  closeModal('modalVehicle');
+  renderVehicle();
+  renderTree();
+}
+
+let deletingVid=null;
+function askDeleteVehicle(vid){
+  deletingVid=vid;
+  document.getElementById('delv-plate').textContent=vehicles[vid].plate;
+  document.getElementById('delv-vin').textContent=vehicles[vid].vin;
+  openModal('modalDelVehicle');
+}
+function confirmDeleteVehicle(){
+  if(!deletingVid) return;
+  const plate=vehicles[deletingVid].plate;
+  const nodeId=nodeOfVehicle(deletingVid);
+  if(nodeId) nodes[nodeId].vehicle=nodes[nodeId].vehicle.filter(x=>x!==deletingVid);
+  delete vehicles[deletingVid];
+  deletingVid=null;
+  closeModal('modalDelVehicle');
+  renderVehicle();
+  renderTree();
+  logAction('车辆管理','删除',`车辆「${plate}」`,'删除了该车辆记录');
+  showToast('车辆已删除');
+}
+
+function fillAccounting(a){
+  const map={'ac-credit':'credit','ac-legal':'legal','ac-title':'title','ac-taxno':'taxno','ac-phone':'phone','ac-addr':'addr','ac-bank':'bank'};
+  Object.entries(map).forEach(([id,key])=>{
+    const el=document.getElementById(id);
+    el.value=a?a[key]:'';
+    el.disabled=true;
+  });
+  document.getElementById('acctSaveBar').style.display='none';
+  document.getElementById('acctEditBtn').style.display='';
+  acctEditing=false;
+}
+function toggleAcctEdit(cancel){
+  acctEditing=!acctEditing && !cancel;
+  ['ac-credit','ac-legal','ac-title','ac-taxno','ac-phone','ac-addr','ac-bank'].forEach(id=>{
+    document.getElementById(id).disabled=!acctEditing;
+  });
+  document.getElementById('acctSaveBar').style.display=acctEditing?'flex':'none';
+  document.getElementById('acctEditBtn').style.display=acctEditing?'none':'';
+  if(cancel) fillAccounting(nodes[selectedId].accounting);
+}
+
+/* tabs */
+function switchTab(name){
+  document.querySelectorAll('.dtab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));
+  document.querySelectorAll('.dpanel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+name));
+}
+document.querySelectorAll('.dtab').forEach(t=>t.addEventListener('click',()=>{ if(!t.classList.contains('hidden')) switchTab(t.dataset.tab);}));
+
+/* filter tree */
+function filterTree(q){
+  q=q.trim().toLowerCase();
+  document.querySelectorAll('#orgTree .node').forEach(n=>{
+    const li=n.parentElement;
+    li.style.display=(!q||n.dataset.name.toLowerCase().includes(q))?'':'none';
+  });
+}
+
+/* ===== 创建/编辑节点弹窗 ===== */
+let editingNodeId=null; // null = 创建模式
+function openCreate(){
+  editingNodeId=null;
+  document.getElementById('modalTitle').textContent='创建节点';
+  document.getElementById('nodeModalConfirmBtn').textContent='确认创建';
+  document.getElementById('f-name').value='';
+  document.getElementById('f-entity').value='徐工集团有限公司';
+  document.getElementById('f-signed').checked=false;
+  clearAccountingForm();
+  onSignedChange();
+  // 填充上级节点下拉（ID+名称）
+  const sel=document.getElementById('f-parent');
+  sel.innerHTML='<option value="">（作为顶级节点）</option>'+
+    Object.values(nodes).map(n=>`<option value="${n.id}" ${n.id===selectedId?'selected':''}>${n.id.toUpperCase()} · ${n.name}</option>`).join('');
+  openModal('modalNode');
+}
+function editNode(){
+  editingNodeId=selectedId;
+  const node=nodes[selectedId];
+  document.getElementById('modalTitle').textContent='编辑节点';
+  document.getElementById('nodeModalConfirmBtn').textContent='保存修改';
+  document.getElementById('f-name').value=node.name;
+  document.getElementById('f-entity').value=node.entity;
+  document.getElementById('f-signed').checked=!!node.signed;
+  fillAccountingForm(node.accounting);
+  onSignedChange();
+  const sel=document.getElementById('f-parent');
+  sel.innerHTML='<option value="">（作为顶级节点）</option>'+
+    Object.values(nodes).filter(n=>n.id!==node.id).map(n=>`<option value="${n.id}" ${n.id===node.parent?'selected':''}>${n.id.toUpperCase()} · ${n.name}</option>`).join('');
+  openModal('modalNode');
+}
+function onSignedChange(){
+  const checked=document.getElementById('f-signed').checked;
+  document.getElementById('condAccounting').classList.toggle('show',checked);
+}
+function clearAccountingForm(){
+  ['sf-credit','sf-legal','sf-title','sf-taxno','sf-phone','sf-addr','sf-bank'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+}
+function fillAccountingForm(acc){
+  clearAccountingForm();
+  if(!acc) return;
+  const map={'sf-credit':acc.credit,'sf-legal':acc.legal,'sf-title':acc.title,'sf-taxno':acc.taxno,'sf-phone':acc.phone,'sf-addr':acc.addr,'sf-bank':acc.bank};
+  Object.keys(map).forEach(id=>{const el=document.getElementById(id); if(el) el.value=map[id]||'';});
+}
+function saveNodeModal(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){ showToast('请输入节点名称'); return; }
+  const parentVal=document.getElementById('f-parent').value || null;
+  const entity=document.getElementById('f-entity').value;
+  const signed=document.getElementById('f-signed').checked;
+  let accounting=null;
+  if(signed){
+    accounting={
+      credit:document.getElementById('sf-credit').value.trim(),
+      legal:document.getElementById('sf-legal').value.trim(),
+      title:document.getElementById('sf-title').value.trim(),
+      taxno:document.getElementById('sf-taxno').value.trim(),
+      phone:document.getElementById('sf-phone').value.trim(),
+      addr:document.getElementById('sf-addr').value.trim(),
+      bank:document.getElementById('sf-bank').value.trim(),
+    };
+  }
+  if(editingNodeId){
+    const node=nodes[editingNodeId];
+    node.name=name; node.parent=parentVal; node.entity=entity; node.signed=signed; node.accounting=accounting;
+    closeModal('modalNode');
+    logAction('组织管理','编辑',`部门「${name}」`,'更新了节点基础信息'+(signed?'及签约信息':''));
+    renderTree(); renderDetail();
+    showToast('节点信息已更新');
+  }else{
+    const id='n'+Date.now();
+    nodes[id]={id,name,type:'dept',parent:parentVal,entity,signed,accounting,status:true,staff:[],vehicle:[]};
+    closeModal('modalNode');
+    logAction('组织管理','新增',`部门「${name}」`,'创建了新的部门节点');
+    selectedId=id;
+    renderTree();
+    document.querySelectorAll('.node').forEach(n=>n.classList.toggle('sel',n.dataset.id===id));
+    renderDetail();
+    showToast('节点已创建');
+  }
+}
+
+/* ===== 节点 启用/禁用 ===== */
+function toggleNodeStatusClick(){
+  const node=nodes[selectedId];
+  if(node.status){
+    // 禁用需要二次确认（影响下属登录/下单）
+    document.getElementById('dis-name').textContent=node.name;
+    openModal('modalDisableNode');
+  }else{
+    // 恢复启用无风险，直接生效
+    node.status=true;
+    renderTree();
+    renderDetail();
+    logAction('组织管理','启用',`部门「${node.name}」`,'恢复启用节点');
+    showToast('节点已恢复启用');
+  }
+}
+function confirmDisableNode(){
+  const node=nodes[selectedId];
+  node.status=false;
+  closeModal('modalDisableNode');
+  renderTree();
+  renderDetail();
+  logAction('组织管理','禁用',`部门「${node.name}」`,'禁用节点，下属账号暂无法登录、下单');
+  showToast('节点已禁用，下属账号暂无法登录、下单');
+}
+
+/* ===== 删除部门 ===== */
+function openDeleteNode(){
+  const node=nodes[selectedId];
+  const kids=childrenOf(node.id);
+  const activeStaff=(node.staff||[]).map(sid=>staff[sid]).filter(Boolean);
+  const blockers=[];
+  if(kids.length) blockers.push(`该节点下还有 <b>${kids.length}</b> 个子节点，请先处理子节点`);
+  if(activeStaff.length) blockers.push(`该节点下还有 <b>${activeStaff.length}</b> 个未离职的员工账号，需先办理离职或更换所属节点`);
+
+  const body=document.getElementById('delNodeBody');
+  const foot=document.getElementById('delNodeFoot');
+  if(blockers.length){
+    body.innerHTML=`
+      <div class="del-warn">
+        <div class="del-warn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></div>
+        <div>暂时无法删除节点 <b>${node.name}</b>：
+          <ul class="block-list">${blockers.map(b=>`<li>${b}</li>`).join('')}</ul>
+        </div>
+      </div>`;
+    foot.innerHTML=`<button class="btn btn-ghost" onclick="closeModal('modalDeleteNode')">我知道了</button>`;
+  }else{
+    body.innerHTML=`
+      <div class="del-warn">
+        <div class="del-warn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></div>
+        <div>确认删除部门 <b>${node.name}</b>？<br><span style="color:var(--text-400);font-size:12.5px;">删除后该部门信息将不可恢复。</span></div>
+      </div>`;
+    foot.innerHTML=`<button class="btn btn-ghost" onclick="closeModal('modalDeleteNode')">取消</button><button class="btn btn-danger" onclick="confirmDeleteNode()">确认删除</button>`;
+  }
+  openModal('modalDeleteNode');
+}
+function confirmDeleteNode(){
+  const node=nodes[selectedId];
+  const parentId=node.parent;
+  const name=node.name;
+  delete nodes[node.id];
+  closeModal('modalDeleteNode');
+  selectedId=parentId||Object.values(nodes).find(n=>n.parent===null).id;
+  renderTree();
+  document.querySelectorAll('.node').forEach(n=>n.classList.toggle('sel',n.dataset.id===selectedId));
+  renderDetail();
+  logAction('组织管理','删除',`部门「${name}」`,'删除了该部门节点');
+  showToast('部门已删除');
+}
+
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(ov=>ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('open');}));
+
+/* ===== 账号管理 全量表 ===== */
+function nodePath(id){
+  let names=[],cur=id;
+  while(cur){names.unshift(nodes[cur].name);cur=nodes[cur].parent;}
+  return names.slice(1).join(' / ')||names[0];
+}
+// 建立 staffId -> nodeId 反查
+function nodeOfStaff(sid){
+  return Object.values(nodes).find(n=>(n.staff||[]).includes(sid))?.id || null;
+}
+function initAccFilters(){
+  const sel=document.getElementById('acc-fnode');
+  if(!sel) return;
+  sel.innerHTML='<option value="">全部节点</option>'+
+    Object.values(nodes).map(n=>`<option value="${n.id}">${nodePath(n.id)}</option>`).join('');
+}
+function renderAllAccounts(){
+  const body=document.getElementById('allAccountsBody');
+  if(!body) return;
+  const q=(document.getElementById('acc-search').value||'').trim().toLowerCase();
+  const fnode=document.getElementById('acc-fnode').value;
+  const frole=document.getElementById('acc-frole').value;
+  const fstatus=document.getElementById('acc-fstatus').value;
+  body.innerHTML='';
+  let count=0;
+  Object.values(nodes).forEach(node=>{
+    (node.staff||[]).forEach(sid=>{
+      const s=staff[sid];
+      if(q && !(s.name.toLowerCase().includes(q)||s.phone.toLowerCase().includes(q))) return;
+      if(fnode && node.id!==fnode) return;
+      if(frole && s.role!==frole) return;
+      if(fstatus==='on' && !s.status) return;
+      if(fstatus==='off' && s.status) return;
+      count++;
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${s.name}</td><td class="mono">${s.phone}</td><td>${nodePath(node.id)}</td><td>${s.role}</td>
+        <td><div class="toggle ${s.status?'on':''}" onclick="toggleStatus('${sid}',this)"></div></td>
+        <td class="mono">${s.ct}</td>
+        <td class="row-actions"><a onclick="openEditAccount('${sid}')">编辑</a><a class="danger" onclick="askOffboard('${sid}')">离职</a></td>`;
+      body.appendChild(tr);
+    });
+  });
+  if(!count){
+    body.innerHTML=`<tr><td colspan="7"><div class="empty-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><div>没有符合筛选条件的账号</div></div></td></tr>`;
+  }
+}
+function toggleStatus(sid,el){
+  staff[sid].status=!staff[sid].status;
+  el.classList.toggle('on',staff[sid].status);
+  logAction('账号管理',staff[sid].status?'启用':'禁用',`账号「${staff[sid].name}」`,staff[sid].status?'恢复启用账号':'禁用账号');
+}
+
+/* ===== 账号编辑 ===== */
+let editingSid=null;
+function openEditAccount(sid){
+  editingSid=sid;
+  const s=staff[sid];
+  document.getElementById('ea-name').value=s.name;
+  // 节点下拉
+  const nsel=document.getElementById('ea-node');
+  const curNode=nodeOfStaff(sid);
+  nsel.innerHTML=Object.values(nodes).map(n=>`<option value="${n.id}" ${n.id===curNode?'selected':''}>${nodePath(n.id)}</option>`).join('');
+  document.getElementById('ea-role').value=s.role;
+  document.getElementById('ea-entity').value=curNode?nodes[curNode].entity:'';
+  openModal('modalEditAccount');
+}
+function onEaNodeChange(){
+  const nid=document.getElementById('ea-node').value;
+  document.getElementById('ea-entity').value=nid?nodes[nid].entity:'';
+}
+function saveEditAccount(){
+  if(!editingSid) return;
+  const s=staff[editingSid];
+  s.name=document.getElementById('ea-name').value.trim()||s.name;
+  s.role=document.getElementById('ea-role').value;
+  // 变更节点：从旧节点移除，加入新节点
+  const newNode=document.getElementById('ea-node').value;
+  const oldNode=nodeOfStaff(editingSid);
+  if(newNode!==oldNode){
+    if(oldNode) nodes[oldNode].staff=nodes[oldNode].staff.filter(x=>x!==editingSid);
+    if(!nodes[newNode].staff) nodes[newNode].staff=[];
+    nodes[newNode].staff.push(editingSid);
+  }
+  closeModal('modalEditAccount');
+  renderAllAccounts();
+  if(typeof renderTree==='function') renderTree();
+  if(typeof renderStaff==='function') renderStaff();
+  logAction('账号管理','编辑',`账号「${s.name}」`,'更新了姓名/角色/所属节点');
+  showToast('账号信息已更新');
+}
+
+/* ===== 员工离职 ===== */
+let offboardingSid=null;
+function askOffboard(sid){
+  offboardingSid=sid;
+  const s=staff[sid];
+  const blockers=[];
+  if(s.pendingApprovals>0) blockers.push(`该账号名下还有 <b>${s.pendingApprovals}</b> 条进行中的审批，需先处理完成`);
+  if(s.pendingOrders>0) blockers.push(`该账号名下还有 <b>${s.pendingOrders}</b> 条进行中的订单，需先处理完成`);
+
+  const body=document.getElementById('offboardBody');
+  const foot=document.getElementById('offboardFoot');
+  if(blockers.length){
+    body.innerHTML=`
+      <div class="del-warn">
+        <div class="del-warn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></div>
+        <div>暂时无法办理 <b>${s.name}</b>（<span class="mono">${s.phone}</span>）离职：
+          <ul class="block-list">${blockers.map(b=>`<li>${b}</li>`).join('')}</ul>
+          <span style="color:var(--text-400);font-size:12.5px;">请先处理完进行中的审批与订单，再重新发起离职。</span>
+        </div>
+      </div>`;
+    foot.innerHTML=`<button class="btn btn-ghost" onclick="closeModal('modalOffboard')">我知道了</button>`;
+  }else{
+    body.innerHTML=`
+      <div class="del-warn">
+        <div class="del-warn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></div>
+        <div>确认办理 <b>${s.name}</b>（<span class="mono">${s.phone}</span>）离职？<br><span style="color:var(--text-400);font-size:12.5px;">离职后该账号将无法登录，且从组织架构中移除，不可恢复。</span></div>
+      </div>`;
+    foot.innerHTML=`<button class="btn btn-ghost" onclick="closeModal('modalOffboard')">取消</button><button class="btn btn-danger" onclick="confirmOffboard()">确认离职</button>`;
+  }
+  openModal('modalOffboard');
+}
+function confirmOffboard(){
+  if(!offboardingSid) return;
+  const name=staff[offboardingSid].name;
+  const nodeId=nodeOfStaff(offboardingSid);
+  if(nodeId) nodes[nodeId].staff=nodes[nodeId].staff.filter(x=>x!==offboardingSid);
+  delete staff[offboardingSid];
+  offboardingSid=null;
+  closeModal('modalOffboard');
+  renderAllAccounts();
+  if(typeof renderTree==='function') renderTree();
+  if(typeof renderStaff==='function') renderStaff();
+  logAction('账号管理','离职',`账号「${name}」`,'办理该员工离职，账号已移除');
+  showToast('该员工已办理离职');
+}
+
+/* ===== 视图切换 ===== */
+const crumbEl=document.getElementById('crumb');
+function switchView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.view===id));
+  const crumbLabel=id==='org'?'组织架构管理':id==='accounts'?'账号管理':'操作日志';
+  const crumbGroup=id==='logs'?'系统管理':'组织管理';
+  crumbEl.innerHTML=crumbGroup+' / <b>'+crumbLabel+'</b>';
+  window.scrollTo(0,0);
+  if(id==='logs') renderLogs();
+}
+document.querySelectorAll('.nav-item').forEach(item=>item.addEventListener('click',()=>switchView(item.dataset.view)));
+
+/* init */
+function toggleSidebar(){ document.querySelector('.app').classList.toggle('collapsed'); }
+
+/* ===== 登录 / 企业身份切换 ===== */
+let pendingLoginPhone=null; // 弹窗选择企业时，暂存对应的登录手机号
+function initLoginForm(){}
+function doLogin(){
+  const phone=document.getElementById('login-phone').value.trim();
+  const pwd=document.getElementById('login-pwd').value.trim();
+  if(!phone||!pwd){ showToast('请输入手机号和密码'); return; }
+
+  const matched=accountsForPhone(phone);
+  if(matched.length===0){
+    showToast('该手机号未查询到可登录的企业，请确认后重试');
+    return;
+  }
+  if(matched.length===1){
+    // 唯一企业，直接登录
+    loginWithAccount(matched[0].id,phone);
+    return;
+  }
+  // 多个企业，弹窗选择
+  openEnterpriseSelectModal(matched,phone);
+}
+function openEnterpriseSelectModal(matched,phone){
+  pendingLoginPhone=phone;
+  const body=document.getElementById('selectEnterpriseBody');
+  body.innerHTML=matched.map(a=>`
+    <div class="login-ent-option" onclick="confirmEnterpriseLogin('${a.id}')">
+      <div class="avatar">${a.avatar}</div>
+      <div class="info"><div class="name">${a.enterpriseName}</div><div class="role">${a.role}</div></div>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+    </div>`).join('');
+  openModal('modalSelectEnterprise');
+}
+function confirmEnterpriseLogin(accId){
+  closeModal('modalSelectEnterprise');
+  loginWithAccount(accId,pendingLoginPhone);
+}
+function loginWithAccount(accId,phone){
+  currentPhone=phone;
+  applyAccount(accId);
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('mainApp').style.display='flex';
+  showToast('登录成功');
+}
+function applyAccount(accId){
+  const acc=LOGIN_ACCOUNTS.find(a=>a.id===accId);
+  if(!acc) return;
+  currentAccountId=acc.id;
+  currentPhone=acc.phone;
+  // 顶部 / 侧边栏 / 下拉菜单文案
+  document.getElementById('footAvatar').textContent=acc.avatar;
+  document.getElementById('footName').textContent=`${acc.userName} · ${acc.role}`;
+  document.getElementById('footRole').textContent=acc.enterpriseName;
+  document.getElementById('utAvatar').textContent=acc.avatar;
+  document.getElementById('utName').textContent=acc.userName;
+  document.getElementById('utRole').textContent=acc.role;
+  document.getElementById('udAvatar').textContent=acc.avatar;
+  document.getElementById('udName').textContent=acc.userName;
+  document.getElementById('udSub').textContent=`${acc.role} · ${acc.enterpriseName}`;
+  document.getElementById('udNodeVal').textContent=acc.enterpriseName;
+  document.getElementById('udRoleVal').innerHTML=`<span class="pill red">${acc.role}</span>`;
+  renderSwitchList();
+  // 切换到该企业对应的组织节点
+  if(nodes[acc.enterpriseNodeId]){
+    selectedId=acc.enterpriseNodeId;
+    renderTree();
+    document.querySelectorAll('.node').forEach(n=>n.classList.toggle('sel',n.dataset.id===selectedId));
+    renderDetail();
+  }
+}
+function renderSwitchList(){
+  const wrap=document.getElementById('udSwitchList');
+  const section=document.getElementById('udSwitchSection');
+  if(!wrap) return;
+  const list=currentPhone?accountsForPhone(currentPhone):[];
+  // 该手机号只关联一家企业时，没有可切换的对象，隐藏整个「切换企业」区块
+  if(section) section.style.display=list.length>1?'':'none';
+  wrap.innerHTML=list.map(a=>{
+    const isCur=a.id===currentAccountId;
+    return `<div class="ud-switch-item ${isCur?'cur':''}" ${isCur?'':`onclick="switchAccount('${a.id}')"`}>
+      <div><div class="name">${a.enterpriseName}</div><div class="role">${a.role}</div></div>
+      ${isCur?'<span class="cur-tag">当前</span>':''}
+    </div>`;
+  }).join('');
+}
+function switchAccount(accId){
+  if(accId===currentAccountId) return;
+  applyAccount(accId);
+  document.getElementById('userDropdown').classList.remove('open');
+  document.querySelector('.user-menu').classList.remove('menu-open');
+  const acc=LOGIN_ACCOUNTS.find(a=>a.id===accId);
+  showToast(`已切换至 ${acc.enterpriseName} · ${acc.role}`);
+}
+
+/* ===== 用户菜单 / 退出登录 ===== */
+function toggleUserMenu(e){
+  e.stopPropagation();
+  const dd=document.getElementById('userDropdown');
+  dd.classList.toggle('open');
+  dd.closest('.user-menu').classList.toggle('menu-open',dd.classList.contains('open'));
+}
+document.addEventListener('click',()=>{
+  const dd=document.getElementById('userDropdown');
+  dd.classList.remove('open');
+  dd.closest('.user-menu').classList.remove('menu-open');
+});
+document.getElementById('userDropdown').addEventListener('click',e=>e.stopPropagation());
+function askLogout(){ document.getElementById('userDropdown').classList.remove('open'); openModal('modalLogout'); }
+function doLogout(){
+  closeModal('modalLogout');
+  document.getElementById('mainApp').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  currentAccountId=null;
+  currentPhone=null;
+  pendingLoginPhone=null;
+  showToast('已退出登录');
+}
+
+initLoginForm();
+renderTree();
+renderDetail();
+initAccFilters();
+renderAllAccounts();
+</script>
+</body>
+</html>
