@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>途虎养车 · 企业账户登录</title>
+<style>
+  :root {
+    --brand: #D0352A;
+    --brand-hover: #B82D23;
+    --brand-disabled: #F0B9B4;
+    --link: #C2302A;
+    --text: #1F2329;
+    --text-2: #4B5563;
+    --text-3: #6B7280;
+    --placeholder: #8A909B;
+    --border: #DCDFE6;
+    --surface: #FFFFFF;
+    --page: #F4F5F8;
+    --page-warm: #FBEEEB;
+    --error: #A8261C;
+    --error-bg: #FEF2F0;
+    --success-bg: #FDECEA;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --brand-disabled: #6B2A25;
+      --link: #F07A70;
+      --text: #ECEEF1;
+      --text-2: #C3C8D0;
+      --text-3: #9EA5B0;
+      --placeholder: #7D8490;
+      --border: #3A3F48;
+      --surface: #1C1F24;
+      --page: #121418;
+      --page-warm: #2A1A18;
+      --error: #FF9B90;
+      --error-bg: #3A1D1A;
+      --success-bg: #3A1D1A;
+      color-scheme: dark;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { height: 100%; }
+  body {
+    margin: 0;
+    min-height: 100%;
+    font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    color: var(--text);
+    background-color: var(--page);
+    background-image: radial-gradient(circle at 100% 100%, var(--page-warm) 0, transparent 45%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  button { font-family: inherit; }
+  :focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+
+  .page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    padding-top: calc(48px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
+  }
+  .card {
+    width: 100%;
+    max-width: 440px;
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 40px 40px 32px;
+    box-shadow: 0 2px 6px rgba(31, 35, 41, .04), 0 16px 40px rgba(31, 35, 41, .08);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-logo {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: var(--brand); color: #FFFFFF;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 700;
+  }
+  .brand-name { font-size: 18px; font-weight: 700; }
+  .brand-sub { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+
+  h1 { margin: 36px 0 0; font-size: 24px; font-weight: 700; line-height: 1.35; }
+  .subtitle { margin: 8px 0 0; font-size: 14px; color: var(--text-3); line-height: 1.6; }
+
+  form { margin-top: 32px; display: flex; flex-direction: column; gap: 20px; }
+  .field { display: flex; flex-direction: column; gap: 8px; }
+  .field label { font-size: 14px; font-weight: 500; color: var(--text-2); }
+  .input-box {
+    display: flex; align-items: center;
+    height: 46px; padding: 0 4px 0 14px;
+    border: 1px solid var(--border); border-radius: 8px;
+    background: var(--surface);
+    transition: border-color .15s;
+  }
+  .input-box:focus-within { border-color: var(--brand); }
+  .input-box.is-error { border-color: var(--error); }
+  .input-box input {
+    flex: 1; min-width: 0; height: 44px;
+    border: 0; outline: none; background: transparent;
+    font-size: 16px; font-family: inherit; color: var(--text);
+  }
+  .input-box input::placeholder { color: var(--placeholder); }
+  .clear-btn {
+    width: 40px; height: 40px; padding: 0;
+    border: 0; background: transparent; cursor: pointer;
+    display: none; align-items: center; justify-content: center;
+    color: var(--placeholder);
+  }
+  .clear-btn.show { display: flex; }
+
+  .code-row { display: flex; gap: 12px; }
+  .code-row .input-box { flex: 1; min-width: 0; padding-right: 14px; }
+  .send-btn {
+    flex: none; min-width: 112px; height: 46px; padding: 0 14px;
+    border: 1px solid var(--brand); border-radius: 8px;
+    background: var(--surface); color: var(--brand);
+    font-size: 15px; font-weight: 500; white-space: nowrap; cursor: pointer;
+  }
+  .send-btn:disabled { border-color: var(--border); color: var(--text-3); cursor: default; }
+  .hint { font-size: 12px; color: var(--text-3); }
+
+  .alert {
+    display: none; align-items: flex-start; gap: 8px;
+    padding: 10px 12px; border-radius: 8px;
+    background: var(--error-bg); color: var(--error);
+    font-size: 13px; line-height: 1.5;
+  }
+  .alert.show { display: flex; }
+  .alert svg { flex: none; margin-top: 2px; }
+
+  .login-btn {
+    margin-top: 8px; height: 48px;
+    border: 0; border-radius: 8px;
+    background: var(--brand); color: #FFFFFF;
+    font-size: 17px; font-weight: 500; letter-spacing: 2px; cursor: pointer;
+  }
+  .login-btn:hover:not(:disabled) { background: var(--brand-hover); }
+  .login-btn:disabled { background: var(--brand-disabled); cursor: default; }
+
+  .spacer { min-height: 0; }
+  .agreement { margin: 28px 0 0; font-size: 13px; color: var(--text-3); text-align: center; line-height: 1.6; }
+
+  .success {
+    display: none; flex: 1; min-height: 380px;
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px; text-align: center;
+  }
+  .success-icon {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--success-bg); color: var(--brand);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .success h2 { margin: 0; font-size: 22px; }
+  .success p { margin: 0; font-size: 14px; color: var(--text-3); line-height: 1.6; }
+
+  /* 移动端：去卡片、整屏白底、协议沉底 */
+  @media (max-width: 640px) {
+    body { background: var(--surface); }
+    .page {
+      align-items: stretch; padding: 0;
+    }
+    .card {
+      max-width: none; border-radius: 0; box-shadow: none;
+      padding: 56px 24px 32px;
+      padding-top: calc(56px + env(safe-area-inset-top, 0px));
+      padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+      min-height: 100vh; min-height: 100dvh;
+    }
+    .spacer { flex: 1; }
+  }
+</style>
+</head>
+<body>
+<main class="page">
+  <div class="card">
+
+    <section id="loginView" style="display:flex;flex-direction:column;flex:1">
+      <div class="brand">
+        <div class="brand-logo" aria-hidden="true">虎</div>
+        <div>
+          <div class="brand-name">途虎养车</div>
+          <div class="brand-sub">企业数字车管平台</div>
+        </div>
+      </div>
+
+      <h1>企业账户登录</h1>
+      <p class="subtitle">仅限企业已开通的下单员手机号登录</p>
+
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="phone">手机号</label>
+          <div class="input-box" id="phoneBox">
+            <input id="phone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="13" placeholder="请输入手机号">
+            <button type="button" class="clear-btn" id="clearPhone" aria-label="清除手机号">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="code">验证码</label>
+          <div class="code-row">
+            <div class="input-box" id="codeBox">
+              <input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="请输入验证码">
+            </div>
+            <button type="button" class="send-btn" id="sendBtn" disabled>获取验证码</button>
+          </div>
+          <span class="hint" id="sentHint" hidden></span>
+        </div>
+
+        <div class="alert" id="alert" role="alert">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/></svg>
+          <span id="alertText"></span>
+        </div>
+
+        <button type="submit" class="login-btn" id="loginBtn" disabled>登录</button>
+      </form>
+
+      <div class="spacer"></div>
+      <p class="agreement">登录即代表同意<a href="#terms">《途虎养车企业服务协议》</a></p>
+    </section>
+
+    <section class="success" id="successView" aria-live="polite">
+      <div class="success-icon">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+      </div>
+      <h2>登录成功</h2>
+      <p><span id="successPhone"></span> · [企业名称]<br>正在进入下单首页…</p>
+    </section>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  // ===== 接口占位：联调时替换为真实请求 =====
+  // 演示规则：199 开头的号码视为未开通；验证码 123456 视为正确
+  var api = {
+    sendCode: function (phone) {
+      return new Promise(function (resolve, reject) {
+        setTimeout(function () {
+          if (phone.indexOf('199') === 0) reject(new Error('该手机号未开通下单权限，请联系企业管理员添加'));
+          else resolve();
+        }, 300);
+      });
+    },
+    login: function (phone, code) {
+      return new Promise(function (resolve, reject) {
+        setTimeout(function () {
+          if (code === '123456') resolve({ redirect: '#order-home' });
+          else reject(new Error('验证码错误或已过期，请重新输入'));
+        }, 800);
+      });
+    }
+  };
+
+  var COUNTDOWN = 60;
+  var $ = function (id) { return document.getElementById(id); };
+  var phoneInput = $('phone'), codeInput = $('code');
+  var phoneBox = $('phoneBox'), codeBox = $('codeBox');
+  var sendBtn = $('sendBtn'), loginBtn = $('loginBtn'), clearBtn = $('clearPhone');
+  var alertBox = $('alert'), alertText = $('alertText'), sentHint = $('sentHint');
+
+  var state = { phone: '', code: '', count: 0, sent: false, loading: false, timer: null };
+
+  function isPhoneOk(p) { return /^1\d{10}$/.test(p); }
+  function fmtPhone(p) {
+    if (p.length > 7) return p.slice(0, 3) + ' ' + p.slice(3, 7) + ' ' + p.slice(7);
+    if (p.length > 3) return p.slice(0, 3) + ' ' + p.slice(3);
+    return p;
+  }
+  function mask(p) { return p.length === 11 ? p.slice(0, 3) + '****' + p.slice(7) : p; }
+
+  function showError(msg, field) {
+    alertText.textContent = msg;
+    alertBox.classList.add('show');
+    sentHint.hidden = true;
+    phoneBox.classList.toggle('is-error', field === 'phone');
+    codeBox.classList.toggle('is-error', field === 'code');
+  }
+  function clearError() {
+    alertBox.classList.remove('show');
+    phoneBox.classList.remove('is-error');
+    codeBox.classList.remove('is-error');
+    if (state.sent) sentHint.hidden = false;
+  }
+
+  function render() {
+    var ok = isPhoneOk(state.phone);
+    clearBtn.classList.toggle('show', state.phone.length > 0);
+    sendBtn.disabled = !ok || state.count > 0;
+    sendBtn.textContent = state.count > 0 ? state.count + 's 后重新获取' : (state.sent ? '重新获取' : '获取验证码');
+    loginBtn.disabled = !(ok && state.code.length === 6) || state.loading;
+    loginBtn.textContent = state.loading ? '登录中…' : '登录';
+  }
+
+  phoneInput.addEventListener('input', function () {
+    var digits = phoneInput.value.replace(/\D/g, '').slice(0, 11);
+    state.phone = digits;
+    phoneInput.value = fmtPhone(digits);
+    clearError();
+    render();
+  });
+
+  clearBtn.addEventListener('click', function () {
+    state.phone = '';
+    phoneInput.value = '';
+    phoneInput.focus();
+    clearError();
+    render();
+  });
+
+  codeInput.addEventListener('input', function () {
+    state.code = codeInput.value.replace(/\D/g, '').slice(0, 6);
+    codeInput.value = state.code;
+    if (codeBox.classList.contains('is-error')) clearError();
+    render();
+  });
+
+  sendBtn.addEventListener('click', function () {
+    if (!isPhoneOk(state.phone) || state.count > 0) return;
+    sendBtn.disabled = true;
+    api.sendCode(state.phone).then(function () {
+      state.sent = true;
+      state.count = COUNTDOWN;
+      sentHint.textContent = '验证码已发送至 ' + mask(state.phone) + '，5 分钟内有效';
+      clearError();
+      codeInput.focus();
+      render();
+      clearInterval(state.timer);
+      state.timer = setInterval(function () {
+        state.count -= 1;
+        if (state.count <= 0) { state.count = 0; clearInterval(state.timer); }
+        render();
+      }, 1000);
+    }).catch(function (err) {
+      showError(err.message, 'phone');
+      render();
+    });
+  });
+
+  $('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (loginBtn.disabled) return;
+    if (!state.sent) { showError('请先获取短信验证码', 'code'); return; }
+    state.loading = true;
+    render();
+    api.login(state.phone, state.code).then(function () {
+      state.loading = false;
+      clearInterval(state.timer);
+      $('successPhone').textContent = mask(state.phone);
+      $('loginView').style.display = 'none';
+      $('successView').style.display = 'flex';
+      // 联调时在这里跳转：location.href = res.redirect;
+    }).catch(function (err) {
+      state.loading = false;
+      showError(err.message, 'code');
+      render();
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
